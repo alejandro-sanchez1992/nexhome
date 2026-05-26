@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexHome – Smart Living</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal-dark: #0d6e7a;
+    --teal: #1a9aab;
+    --teal-light: #3ec6d8;
+    --teal-glow: rgba(30,180,200,0.18);
+    --bg: #050c10;
+    --bg2: #07131a;
+    --bg3: #0b1e27;
+    --surface: #0f2630;
+    --surface2: #152f3a;
+    --text: #e8f4f7;
+    --text-muted: #7aacba;
+    --white: #ffffff;
+    --gold: #e8c96b;
+    --radius: 18px;
+    --transition: 0.35s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CURSOR */
+  .cursor { position: fixed; width: 10px; height: 10px; background: var(--teal-light); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: transform 0.1s, width 0.3s, height 0.3s, opacity 0.3s; mix-blend-mode: screen; }
+  .cursor-ring { position: fixed; width: 36px; height: 36px; border: 1.5px solid var(--teal); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: transform 0.18s ease, width 0.3s, height 0.3s, opacity 0.3s; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 60px;
+    background: rgba(5,12,16,0.7);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(30,154,171,0.12);
+    transition: padding var(--transition);
+  }
+  nav.scrolled { padding: 14px 60px; }
+
+  .logo-area { display: flex; align-items: center; gap: 14px; }
+  .logo-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--teal-dark), var(--teal-light));
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .logo-icon svg { width: 26px; height: 26px; fill: none; stroke: white; stroke-width: 2; }
+  .logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: -0.02em; color: white; }
+  .logo-text span { color: var(--teal-light); }
+  .logo-sub { font-size: 0.62rem; letter-spacing: 0.25em; color: var(--text-muted); text-transform: uppercase; display: block; margin-top: -3px; }
+
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a { font-size: 0.88rem; color: var(--text-muted); text-decoration: none; letter-spacing: 0.03em; transition: color var(--transition); }
+  .nav-links a:hover { color: var(--teal-light); }
+  .nav-cta {
+    background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+    color: white; border: none; padding: 11px 26px; border-radius: 50px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 500;
+    cursor: none; transition: all var(--transition); text-decoration: none;
+    box-shadow: 0 0 20px rgba(26,154,171,0.3);
+  }
+  .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 0 35px rgba(26,154,171,0.5); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 120px 60px 80px;
+    position: relative; overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 70% 50%, rgba(13,110,122,0.25) 0%, transparent 65%),
+                radial-gradient(ellipse 40% 40% at 20% 80%, rgba(26,154,171,0.1) 0%, transparent 60%);
+  }
+
+  .grid-overlay {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(30,154,171,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(30,154,171,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* floating orbs */
+  .orb {
+    position: absolute; border-radius: 50%; filter: blur(70px); pointer-events: none; animation: drift 12s ease-in-out infinite alternate;
+  }
+  .orb1 { width: 420px; height: 420px; background: rgba(13,110,122,0.2); top: -80px; right: 5%; animation-duration: 14s; }
+  .orb2 { width: 260px; height: 260px; background: rgba(62,198,216,0.12); bottom: 10%; left: 15%; animation-duration: 10s; animation-delay: -5s; }
+  @keyframes drift { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(30px,-25px) scale(1.08); } }
+
+  .hero-content { position: relative; z-index: 2; max-width: 680px; }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(62,198,216,0.08); border: 1px solid rgba(62,198,216,0.2);
+    padding: 7px 18px; border-radius: 50px; margin-bottom: 32px;
+    font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal-light);
+    animation: fadeUp 0.8s ease both;
+  }
+  .hero-badge .dot { width: 6px; height: 6px; background: var(--teal-light); border-radius: 50%; animation: pulse 2s ease infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3rem, 6vw, 5.2rem);
+    font-weight: 800;
+    line-height: 1.03;
+    letter-spacing: -0.03em;
+    color: var(--white);
+    margin-bottom: 28px;
+    animation: fadeUp 0.8s 0.15s ease both;
+  }
+  .hero h1 em { font-style: normal; color: var(--teal-light); }
+  .hero h1 .underline { position: relative; display: inline-block; }
+  .hero h1 .underline::after {
+    content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--teal), transparent);
+    border-radius: 2px;
+  }
+
+  .hero-sub {
+    font-size: 1.15rem; color: var(--text-muted); line-height: 1.7;
+    margin-bottom: 44px; font-weight: 300;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  .hero-actions { display: flex; gap: 16px; align-items: center; animation: fadeUp 0.8s 0.45s ease both; flex-wrap: wrap; }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--teal-dark), var(--teal-light));
+    color: white; border: none; padding: 16px 36px; border-radius: 50px;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500;
+    cursor: none; text-decoration: none; transition: all var(--transition);
+    box-shadow: 0 8px 40px rgba(26,154,171,0.35);
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 50px rgba(26,154,171,0.55); }
+  .btn-primary svg { width: 18px; height: 18px; transition: transform var(--transition); }
+  .btn-primary:hover svg { transform: translateX(4px); }
+
+  .btn-secondary {
+    color: var(--text-muted); text-decoration: none; font-size: 0.95rem;
+    display: inline-flex; align-items: center; gap: 8px; transition: color var(--transition);
+  }
+  .btn-secondary:hover { color: var(--teal-light); }
+  .btn-secondary svg { width: 36px; height: 36px; background: var(--surface); border-radius: 50%; padding: 9px; transition: all var(--transition); }
+  .btn-secondary:hover svg { background: var(--surface2); transform: scale(1.1); }
+
+  /* STATS BAR */
+  .stats-bar {
+    position: relative; z-index: 2;
+    display: flex; gap: 0; margin-top: 80px;
+    background: rgba(15,38,48,0.6); backdrop-filter: blur(20px);
+    border: 1px solid rgba(30,154,171,0.15); border-radius: var(--radius);
+    overflow: hidden; animation: fadeUp 0.8s 0.6s ease both;
+  }
+  .stat-item {
+    flex: 1; padding: 28px 32px; text-align: center;
+    border-right: 1px solid rgba(30,154,171,0.1);
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Syne', sans-serif; font-size: 2.2rem; font-weight: 800;
+    color: var(--teal-light); display: block; letter-spacing: -0.03em;
+  }
+  .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* SECTION COMMON */
+  section { padding: 100px 60px; }
+  .section-tag {
+    font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--teal); margin-bottom: 16px; display: block;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif; font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800; color: var(--white); letter-spacing: -0.03em; line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  .section-desc { font-size: 1.05rem; color: var(--text-muted); line-height: 1.8; max-width: 540px; font-weight: 300; }
+
+  /* SERVICES */
+  .services { background: var(--bg2); }
+  .services-header { text-align: center; margin-bottom: 64px; }
+  .services-header .section-desc { margin: 0 auto; }
+
+  .services-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1100px; margin: 0 auto;
+  }
+
+  .service-card {
+    background: var(--surface); border: 1px solid rgba(30,154,171,0.1);
+    border-radius: var(--radius); padding: 36px 30px;
+    transition: all var(--transition); position: relative; overflow: hidden; cursor: none;
+  }
+  .service-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(62,198,216,0.05) 0%, transparent 60%);
+    opacity: 0; transition: opacity var(--transition);
+  }
+  .service-card:hover { border-color: rgba(62,198,216,0.3); transform: translateY(-6px); box-shadow: 0 20px 60px rgba(13,110,122,0.2); }
+  .service-card:hover::before { opacity: 1; }
+
+  .service-icon {
+    width: 52px; height: 52px; background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+    border-radius: 14px; display: flex; align-items: center; justify-content: center;
+    margin-bottom: 24px; transition: transform var(--transition);
+  }
+  .service-card:hover .service-icon { transform: scale(1.1) rotate(-5deg); }
+  .service-icon svg { width: 26px; height: 26px; stroke: white; stroke-width: 1.8; fill: none; }
+
+  .service-card h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--white); margin-bottom: 10px; }
+  .service-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+
+  /* CÓMO FUNCIONA */
+  .how { background: var(--bg); }
+  .how-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .how-steps { display: flex; flex-direction: column; gap: 0; }
+
+  .step {
+    display: flex; gap: 24px; align-items: flex-start;
+    padding: 28px 0; border-bottom: 1px solid rgba(30,154,171,0.08);
+    position: relative;
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    width: 44px; height: 44px; min-width: 44px;
+    background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.95rem; color: white;
+    box-shadow: 0 0 20px rgba(26,154,171,0.3);
+  }
+  .step-content h4 { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--white); margin-bottom: 6px; }
+  .step-content p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
+
+  .how-visual {
+    position: relative; display: flex; align-items: center; justify-content: center;
+  }
+  .phone-mockup {
+    width: 260px; background: #0b1e27; border-radius: 36px;
+    border: 2px solid rgba(62,198,216,0.2); padding: 20px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 60px rgba(26,154,171,0.15);
+    position: relative; z-index: 2;
+    animation: float 6s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+  .phone-notch { width: 60px; height: 8px; background: var(--bg); border-radius: 4px; margin: 0 auto 20px; }
+  .phone-header { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; color: white; margin-bottom: 18px; }
+  .phone-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .phone-tile {
+    background: var(--surface2); border-radius: 14px; padding: 14px 10px; text-align: center;
+    border: 1px solid rgba(62,198,216,0.1);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .phone-tile svg { width: 22px; height: 22px; stroke: var(--teal-light); fill: none; stroke-width: 1.8; }
+  .phone-tile span { font-size: 0.72rem; color: var(--text-muted); }
+  .phone-tile.active { background: linear-gradient(135deg, rgba(13,110,122,0.4), rgba(62,198,216,0.1)); border-color: var(--teal); }
+  .phone-tile.active svg { stroke: var(--teal-light); }
+  .phone-tile.active span { color: var(--teal-light); }
+
+  .visual-ring {
+    position: absolute; border-radius: 50%; border: 1px solid rgba(62,198,216,0.12);
+    animation: expand 8s ease-in-out infinite;
+  }
+  .ring1 { width: 320px; height: 320px; animation-delay: 0s; }
+  .ring2 { width: 420px; height: 420px; animation-delay: 2s; }
+  .ring3 { width: 520px; height: 520px; animation-delay: 4s; }
+  @keyframes expand { 0%,100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 0.2; transform: scale(1.04); } }
+
+  /* CONTROLA */
+  .control { background: var(--bg2); }
+  .control-header { text-align: center; margin-bottom: 56px; }
+  .control-header .section-desc { margin: 0 auto; }
+  .control-items { display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; max-width: 900px; margin: 0 auto; }
+  .control-item {
+    background: var(--surface); border: 1px solid rgba(30,154,171,0.1);
+    border-radius: var(--radius); padding: 28px 22px; text-align: center; width: 130px;
+    transition: all var(--transition); cursor: none;
+  }
+  .control-item:hover { border-color: var(--teal); transform: translateY(-5px); background: var(--surface2); }
+  .control-item svg { width: 32px; height: 32px; stroke: var(--teal-light); fill: none; stroke-width: 1.8; margin-bottom: 12px; }
+  .control-item span { font-size: 0.82rem; color: var(--text-muted); display: block; line-height: 1.4; }
+
+  /* PLANES */
+  .pricing { background: var(--bg); }
+  .pricing-header { text-align: center; margin-bottom: 56px; }
+  .pricing-card {
+    max-width: 620px; margin: 0 auto;
+    background: linear-gradient(135deg, var(--surface), var(--surface2));
+    border: 1px solid rgba(62,198,216,0.25); border-radius: 28px; padding: 60px;
+    text-align: center; position: relative; overflow: hidden;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.4), 0 0 80px rgba(26,154,171,0.08);
+  }
+  .pricing-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--teal-dark), var(--teal-light));
+  }
+  .pricing-badge {
+    display: inline-block; background: rgba(62,198,216,0.1); border: 1px solid rgba(62,198,216,0.2);
+    color: var(--teal-light); padding: 6px 18px; border-radius: 50px;
+    font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 28px;
+  }
+  .pricing-price { font-family: 'Syne', sans-serif; font-size: 3.5rem; font-weight: 800; color: var(--white); line-height: 1; }
+  .pricing-price small { font-size: 1.2rem; color: var(--text-muted); vertical-align: super; }
+  .pricing-desc { color: var(--text-muted); margin: 16px 0 36px; font-size: 0.95rem; }
+  .pricing-features { text-align: left; margin-bottom: 40px; display: flex; flex-direction: column; gap: 14px; }
+  .pricing-feat { display: flex; align-items: center; gap: 12px; font-size: 0.92rem; color: var(--text); }
+  .pricing-feat svg { width: 18px; height: 18px; stroke: var(--teal-light); fill: none; stroke-width: 2.5; flex-shrink: 0; }
+  .btn-pricing {
+    width: 100%; background: linear-gradient(135deg, var(--teal-dark), var(--teal-light));
+    color: white; border: none; padding: 18px; border-radius: 50px;
+    font-family: 'DM Sans', sans-serif; font-size: 1.05rem; font-weight: 500;
+    cursor: none; transition: all var(--transition);
+    box-shadow: 0 8px 40px rgba(26,154,171,0.35);
+  }
+  .btn-pricing:hover { transform: translateY(-2px); box-shadow: 0 12px 50px rgba(26,154,171,0.55); }
+
+  /* POR QUÉ */
+  .why { background: var(--bg2); }
+  .why-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .why-features { display: flex; flex-direction: column; gap: 24px; }
+  .why-feat {
+    display: flex; gap: 18px; align-items: flex-start; padding: 22px;
+    background: var(--surface); border-radius: 14px; border: 1px solid rgba(30,154,171,0.08);
+    transition: all var(--transition); cursor: none;
+  }
+  .why-feat:hover { border-color: rgba(62,198,216,0.25); transform: translateX(6px); }
+  .why-feat-icon {
+    width: 40px; height: 40px; min-width: 40px; background: rgba(26,154,171,0.12);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  }
+  .why-feat-icon svg { width: 20px; height: 20px; stroke: var(--teal-light); fill: none; stroke-width: 2; }
+  .why-feat h4 { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--white); font-size: 0.95rem; margin-bottom: 4px; }
+  .why-feat p { font-size: 0.86rem; color: var(--text-muted); line-height: 1.6; }
+
+  /* CTA */
+  .cta-section {
+    background: var(--bg); padding: 100px 60px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .cta-section::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(13,110,122,0.18) 0%, transparent 70%);
+  }
+  .cta-section .section-title { margin: 0 auto 20px; }
+  .cta-section .section-desc { margin: 0 auto 44px; text-align: center; }
+  .cta-section > * { position: relative; z-index: 2; }
+  .cta-actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
+  .btn-whatsapp {
+    background: #25d366; color: white; border: none;
+    padding: 16px 36px; border-radius: 50px;
+    font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500;
+    cursor: none; text-decoration: none; transition: all var(--transition);
+    display: inline-flex; align-items: center; gap: 10px;
+    box-shadow: 0 8px 30px rgba(37,211,102,0.3);
+  }
+  .btn-whatsapp:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(37,211,102,0.5); }
+  .btn-outline {
+    border: 1px solid rgba(62,198,216,0.3); color: var(--teal-light);
+    padding: 16px 36px; border-radius: 50px; text-decoration: none; font-size: 1rem;
+    transition: all var(--transition); display: inline-flex; align-items: center; gap: 10px;
+  }
+  .btn-outline:hover { background: rgba(62,198,216,0.08); border-color: var(--teal-light); transform: translateY(-3px); }
+
+  /* FOOTER */
+  footer {
+    background: var(--bg2); border-top: 1px solid rgba(30,154,171,0.1);
+    padding: 60px; display: flex; align-items: center; justify-content: space-between; flex-wrap: gap;
+    gap: 24px;
+  }
+  .footer-logo { display: flex; align-items: center; gap: 12px; }
+  .footer-info { font-size: 0.82rem; color: var(--text-muted); line-height: 1.8; }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; transition: color var(--transition); }
+  .footer-links a:hover { color: var(--teal-light); }
+
+  /* SCROLL REVEAL */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+  .reveal-delay-5 { transition-delay: 0.5s; }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="logo-area">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1z"/><path d="M8.5 13a2 2 0 104 0 2 2 0 00-4 0"/><path d="M12 11V9M10 15.5c1.38.67 2.62.67 4 0"/></svg>
+    </div>
+    <div>
+      <div class="logo-text"><span>NEX</span>HOME</div>
+      <span class="logo-sub">Smart Living</span>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="#servicios">Servicios</a>
+    <a href="#como-funciona">Cómo funciona</a>
+    <a href="#planes">Planes</a>
+    <a href="#contacto" class="nav-cta">Cotizar ahora</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="grid-overlay"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge"><div class="dot"></div> Automatización del hogar</div>
+    <h1>Convierte tu casa<br>en <em class="underline">inteligente</em></h1>
+    <p class="hero-sub">Tecnología, comodidad y seguridad al alcance de tu mano.<br>Controla tu hogar desde cualquier lugar con una sola app.</p>
+    <div class="hero-actions">
+      <a href="#contacto" class="btn-primary">
+        Cotizar gratis
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="#como-funciona" class="btn-secondary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Ver cómo funciona
+      </a>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-item"><span class="stat-num">100%</span><span class="stat-label">Personalizado</span></div>
+      <div class="stat-item"><span class="stat-num">24/7</span><span class="stat-label">Seguridad</span></div>
+      <div class="stat-item"><span class="stat-num">1 App</span><span class="stat-label">Control total</span></div>
+      <div class="stat-item"><span class="stat-num">Pro</span><span class="stat-label">Instalación</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section class="services" id="servicios">
+  <div class="services-header">
+    <span class="section-tag reveal">Nuestros servicios</span>
+    <h2 class="section-title reveal">¿Qué incluyen nuestros planes?</h2>
+    <p class="section-desc reveal">Soluciones personalizadas para que disfrutes una experiencia inteligente, segura y eficiente en tu hogar.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal reveal-delay-1">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/><circle cx="12" cy="12" r="5"/></svg>
+      </div>
+      <h3>Iluminación Inteligente</h3>
+      <p>Controla tus luces desde cualquier lugar, crea ambientes únicos y programa escenas automáticas según tu rutina.</p>
+    </div>
+    <div class="service-card reveal reveal-delay-2">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 110 20 10 10 0 010-20z"/><path d="M12 6v6l4 2"/></svg>
+      </div>
+      <h3>Automatización Total</h3>
+      <p>Automatiza rutinas diarias y dispositivos para mayor comodidad, eficiencia y ahorro de energía en tu hogar.</p>
+    </div>
+    <div class="service-card reveal reveal-delay-3">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>
+      </div>
+      <h3>Control por Voz</h3>
+      <p>Maneja tu hogar con comandos de voz a través de asistentes inteligentes como Alexa, Google o Siri.</p>
+    </div>
+    <div class="service-card reveal reveal-delay-1">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+      </div>
+      <h3>Control desde tu Celular</h3>
+      <p>Administra todos tus dispositivos desde una sola aplicación, estés donde estés, las 24 horas del día.</p>
+    </div>
+    <div class="service-card reveal reveal-delay-2">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h3>Seguridad Inteligente</h3>
+      <p>Monitorea y protege tu hogar con cámaras, sensores, alarmas y cerraduras inteligentes las 24/7.</p>
+    </div>
+    <div class="service-card reveal reveal-delay-3">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      <h3>Ahorro de Energía</h3>
+      <p>Optimiza el consumo energético de tu hogar con sensores y automatizaciones que reducen costos fácilmente.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CÓMO FUNCIONA -->
+<section class="how" id="como-funciona">
+  <div class="how-inner">
+    <div>
+      <span class="section-tag reveal">Proceso simple</span>
+      <h2 class="section-title reveal">¿Cómo funciona?</h2>
+      <p class="section-desc reveal" style="margin-bottom:44px;">En 4 sencillos pasos transformamos tu hogar en un espacio inteligente, seguro y eficiente.</p>
+      <div class="how-steps">
+        <div class="step reveal reveal-delay-1">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Evaluamos tu hogar</h4>
+            <p>Realizamos una visita para entender tus necesidades y objetivos de automatización.</p>
+          </div>
+        </div>
+        <div class="step reveal reveal-delay-2">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Diseñamos tu solución</h4>
+            <p>Creamos un proyecto personalizado con la mejor tecnología para ti y tu familia.</p>
+          </div>
+        </div>
+        <div class="step reveal reveal-delay-3">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Instalación profesional</h4>
+            <p>Instalamos y configuramos todos los dispositivos de forma segura y ordenada.</p>
+          </div>
+        </div>
+        <div class="step reveal reveal-delay-4">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>Disfruta tu hogar inteligente</h4>
+            <p>Controla todo desde tu celular o con tu voz y vive la experiencia NexHome.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="how-visual reveal">
+      <div class="visual-ring ring1"></div>
+      <div class="visual-ring ring2"></div>
+      <div class="visual-ring ring3"></div>
+      <div class="phone-mockup">
+        <div class="phone-notch"></div>
+        <div class="phone-header">Mi Hogar ✦</div>
+        <div class="phone-grid">
+          <div class="phone-tile active">
+            <svg viewBox="0 0 24 24"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/><circle cx="12" cy="12" r="5"/></svg>
+            <span>Luces</span>
+          </div>
+          <div class="phone-tile">
+            <svg viewBox="0 0 24 24"><path d="M12 22a9 9 0 110-18 9 9 0 010 18z"/><path d="M12 8v4l3 3"/></svg>
+            <span>Clima</span>
+          </div>
+          <div class="phone-tile">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Seguridad</span>
+          </div>
+          <div class="phone-tile active">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            <span>Cámaras</span>
+          </div>
+          <div class="phone-tile">
+            <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13M6 15H3a1 1 0 000 2h3a1 1 0 000-2zM21 13h-3a1 1 0 000 2h3a1 1 0 000-2z"/></svg>
+            <span>Música</span>
+          </div>
+          <div class="phone-tile">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="3"/><rect x="2" y="10" width="20" height="3"/><path d="M2 17h20"/></svg>
+            <span>Persianas</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUÉ CONTROLAS -->
+<section class="control" id="controla">
+  <div class="control-header">
+    <span class="section-tag reveal">Control total</span>
+    <h2 class="section-title reveal">¿Qué puedes controlar?</h2>
+    <p class="section-desc reveal">Todo tu hogar en una sola aplicación. Fácil, rápido y desde donde estés.</p>
+  </div>
+  <div class="control-items">
+    <div class="control-item reveal reveal-delay-1">
+      <svg viewBox="0 0 24 24"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/><circle cx="12" cy="12" r="5"/></svg>
+      <span>Iluminación</span>
+    </div>
+    <div class="control-item reveal reveal-delay-2">
+      <svg viewBox="0 0 24 24"><path d="M12 22a9 9 0 110-18 9 9 0 010 18z"/><path d="M12 8v4l3 3"/></svg>
+      <span>Clima & A/C</span>
+    </div>
+    <div class="control-item reveal reveal-delay-3">
+      <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="3"/><rect x="2" y="10" width="20" height="3"/><path d="M2 17h20"/></svg>
+      <span>Persianas & Cortinas</span>
+    </div>
+    <div class="control-item reveal reveal-delay-1">
+      <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      <span>Entretenimiento</span>
+    </div>
+    <div class="control-item reveal reveal-delay-2">
+      <svg viewBox="0 0 24 24"><path d="M6 3h12M6 21h12M3 12h18M3 6l3-3 3 3 3-3 3 3 3-3M3 18l3 3 3-3 3 3 3-3 3 3"/></svg>
+      <span>Electrodomésticos</span>
+    </div>
+    <div class="control-item reveal reveal-delay-3">
+      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Seguridad</span>
+    </div>
+    <div class="control-item reveal reveal-delay-4">
+      <svg viewBox="0 0 24 24"><path d="M12 22s-8-4-8-10V5l8-3 8 3v7c0 6-8 10-8 10z"/><circle cx="12" cy="11" r="3"/></svg>
+      <span>Riego & Jardín</span>
+    </div>
+  </div>
+</section>
+
+<!-- PLANES -->
+<section class="pricing" id="planes">
+  <div class="pricing-header">
+    <span class="section-tag reveal">Precios transparentes</span>
+    <h2 class="section-title reveal">Planes desde</h2>
+  </div>
+  <div class="pricing-card reveal">
+    <div class="pricing-badge">Plan Personalizado</div>
+    <div class="pricing-price"><small>$</small>1.990.000</div>
+    <p class="pricing-desc">Creamos el plan ideal para tu hogar y tu estilo de vida.<br>Incluye instalación profesional y garantía en todos los servicios.</p>
+    <div class="pricing-features">
+      <div class="pricing-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Instalación limpia y profesional</div>
+      <div class="pricing-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Soluciones 100% personalizadas</div>
+      <div class="pricing-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Equipos de alta calidad certificados</div>
+      <div class="pricing-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Tecnología escalable y actualizable</div>
+      <div class="pricing-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Soporte técnico especializado 24/7</div>
+      <div class="pricing-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Garantía en todos nuestros servicios</div>
+      <div class="pricing-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>App móvil compatible con voz</div>
+    </div>
+    <button class="btn-pricing" onclick="window.open('https://wa.me/573000000000?text=Hola! Me interesa cotizar un plan NexHome', '_blank')">Cotizar mi plan ahora →</button>
+  </div>
+</section>
+
+<!-- POR QUÉ ELEGIRNOS -->
+<section class="why" id="por-que">
+  <div class="why-inner">
+    <div>
+      <span class="section-tag reveal">Nuestra diferencia</span>
+      <h2 class="section-title reveal">¿Por qué elegirnos?</h2>
+      <p class="section-desc reveal">No solo instalamos tecnología, creamos experiencias que transforman tu forma de vivir.</p>
+    </div>
+    <div class="why-features">
+      <div class="why-feat reveal reveal-delay-1">
+        <div class="why-feat-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <div><h4>Instalación profesional</h4><p>Nuestros técnicos certificados garantizan una instalación limpia y ordenada.</p></div>
+      </div>
+      <div class="why-feat reveal reveal-delay-2">
+        <div class="why-feat-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
+        <div><h4>Soporte especializado</h4><p>Equipo técnico disponible para ayudarte siempre que lo necesites.</p></div>
+      </div>
+      <div class="why-feat reveal reveal-delay-3">
+        <div class="why-feat-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div><h4>Garantía total</h4><p>Todos nuestros servicios y equipos cuentan con garantía para tu tranquilidad.</p></div>
+      </div>
+      <div class="why-feat reveal reveal-delay-4">
+        <div class="why-feat-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <div><h4>Tecnología de vanguardia</h4><p>Soluciones escalables con los mejores dispositivos del mercado actual.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contacto">
+  <span class="section-tag">¡Es hora!</span>
+  <h2 class="section-title">Lleva tu hogar al<br>siguiente nivel</h2>
+  <p class="section-desc">Cotiza ahora sin compromiso. Nuestros expertos te diseñarán la solución perfecta para tu hogar y presupuesto.</p>
+  <div class="cta-actions">
+    <a href="https://wa.me/573000000000?text=Hola! Me interesa cotizar un plan NexHome Smart Living" target="_blank" class="btn-whatsapp">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Cotizar por WhatsApp
+    </a>
+    <a href="mailto:info@nexhome.co" class="btn-outline">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Enviar email
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <div class="logo-icon" style="width:36px;height:36px;">
+      <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:none;stroke:white;stroke-width:2;"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1z"/><circle cx="12" cy="13" r="2.5"/></svg>
+    </div>
+    <div>
+      <div class="logo-text" style="font-size:1rem;"><span>NEX</span>HOME</div>
+      <span class="logo-sub">Smart Living</span>
+    </div>
+  </div>
+  <div class="footer-info">
+    Hacemos tu vida más fácil, segura y conectada.<br>
+    © 2026 NexHome Smart Living. Todos los derechos reservados.
+  </div>
+  <div class="footer-links">
+    <a href="#servicios">Servicios</a>
+    <a href="#planes">Planes</a>
+    <a href="#contacto">Contacto</a>
+    <a href="#">Instagram</a>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const cursorRing = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx+'px'; cursor.style.top = my+'px'; });
+  function animRing() { rx += (mx - rx) * 0.15; ry += (my - ry) * 0.15; cursorRing.style.left = rx+'px'; cursorRing.style.top = ry+'px'; requestAnimationFrame(animRing); }
+  animRing();
+  document.querySelectorAll('a,button,.service-card,.control-item,.why-feat').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.style.width='14px'; cursor.style.height='14px'; cursorRing.style.width='50px'; cursorRing.style.height='50px'; cursorRing.style.borderColor='var(--teal-light)'; });
+    el.addEventListener('mouseleave', () => { cursor.style.width='10px'; cursor.style.height='10px'; cursorRing.style.width='36px'; cursorRing.style.height='36px'; cursorRing.style.borderColor='var(--teal)'; });
+  });
+
+  // Navbar scroll
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 50); });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  reveals.forEach(r => obs.observe(r));
+</script>
+</body>
+</html>
