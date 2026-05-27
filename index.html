@@ -4,404 +4,469 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NexHome – Smart Living</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --teal-dark: #0d6e7a;
-    --teal: #1a9aab;
-    --teal-light: #3ec6d8;
-    --teal-glow: rgba(30,180,200,0.18);
-    --bg: #050c10;
-    --bg2: #07131a;
-    --bg3: #0b1e27;
-    --surface: #0f2630;
-    --surface2: #152f3a;
-    --text: #e8f4f7;
-    --text-muted: #7aacba;
-    --white: #ffffff;
-    --gold: #e8c96b;
-    --radius: 18px;
-    --transition: 0.35s cubic-bezier(0.4,0,0.2,1);
-  }
+:root {
+  --teal-dark: #0d6e7a;
+  --teal: #1a9aab;
+  --teal-light: #3ec6d8;
+  --bg: #050c10;
+  --bg2: #07131a;
+  --surface: #0f2630;
+  --surface2: #152f3a;
+  --text: #e8f4f7;
+  --text-muted: #7aacba;
+  --white: #ffffff;
+  --radius: 18px;
+  --transition: 0.35s cubic-bezier(0.4,0,0.2,1);
+}
 
-  html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    overflow-x: hidden;
-    cursor: none;
-  }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  cursor: none;
+}
 
-  /* CURSOR */
-  .cursor { position: fixed; width: 10px; height: 10px; background: var(--teal-light); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: transform 0.1s, width 0.3s, height 0.3s, opacity 0.3s; mix-blend-mode: screen; }
-  .cursor-ring { position: fixed; width: 36px; height: 36px; border: 1.5px solid var(--teal); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: transform 0.18s ease, width 0.3s, height 0.3s, opacity 0.3s; }
+/* ─── CURSOR (desktop only) ─── */
+.cursor, .cursor-ring { display: none; }
+@media (pointer: fine) {
+  .cursor { display: block; position: fixed; width: 10px; height: 10px; background: var(--teal-light); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: width .3s, height .3s; mix-blend-mode: screen; }
+  .cursor-ring { display: block; position: fixed; width: 36px; height: 36px; border: 1.5px solid var(--teal); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); }
+  body { cursor: none; }
+}
 
-  /* NAV */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 22px 60px;
-    background: rgba(5,12,16,0.7);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(30,154,171,0.12);
-    transition: padding var(--transition);
-  }
-  nav.scrolled { padding: 14px 60px; }
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 60px;
+  background: rgba(5,12,16,0.75);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(30,154,171,0.12);
+  transition: padding var(--transition);
+}
+nav.scrolled { padding: 12px 60px; }
 
-  .logo-area { display: flex; align-items: center; gap: 14px; }
-  .logo-icon {
-    width: 44px; height: 44px;
-    background: linear-gradient(135deg, var(--teal-dark), var(--teal-light));
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    position: relative; overflow: hidden;
-  }
-  .logo-icon svg { width: 26px; height: 26px; fill: none; stroke: white; stroke-width: 2; }
-  .logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem; letter-spacing: -0.02em; color: white; }
-  .logo-text span { color: var(--teal-light); }
-  .logo-sub { font-size: 0.62rem; letter-spacing: 0.25em; color: var(--text-muted); text-transform: uppercase; display: block; margin-top: -3px; }
+.logo-area { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.logo-icon {
+  width: 42px; height: 42px;
+  background: linear-gradient(135deg, var(--teal-dark), var(--teal-light));
+  border-radius: 11px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.logo-icon svg { width: 24px; height: 24px; fill: none; stroke: white; stroke-width: 2; }
+.logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.25rem; letter-spacing: -0.02em; color: white; line-height: 1.1; }
+.logo-text span { color: var(--teal-light); }
+.logo-sub { font-size: 0.58rem; letter-spacing: 0.22em; color: var(--text-muted); text-transform: uppercase; display: block; }
 
-  .nav-links { display: flex; gap: 36px; align-items: center; }
-  .nav-links a { font-size: 0.88rem; color: var(--text-muted); text-decoration: none; letter-spacing: 0.03em; transition: color var(--transition); }
-  .nav-links a:hover { color: var(--teal-light); }
-  .nav-cta {
-    background: linear-gradient(135deg, var(--teal-dark), var(--teal));
-    color: white; border: none; padding: 11px 26px; border-radius: 50px;
-    font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 500;
-    cursor: none; transition: all var(--transition); text-decoration: none;
-    box-shadow: 0 0 20px rgba(26,154,171,0.3);
-  }
-  .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 0 35px rgba(26,154,171,0.5); }
+.nav-links { display: flex; gap: 32px; align-items: center; }
+.nav-links a { font-size: 0.87rem; color: var(--text-muted); text-decoration: none; transition: color var(--transition); }
+.nav-links a:hover { color: var(--teal-light); }
+.nav-cta {
+  background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+  color: white !important; padding: 10px 24px; border-radius: 50px;
+  font-weight: 500; box-shadow: 0 0 20px rgba(26,154,171,0.3);
+  transition: all var(--transition) !important;
+}
+.nav-cta:hover { transform: translateY(-2px); box-shadow: 0 0 35px rgba(26,154,171,0.5); }
 
-  /* HERO */
+.nav-hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+.nav-hamburger span { display: block; width: 24px; height: 2px; background: var(--text-muted); border-radius: 2px; transition: all .3s; }
+
+/* mobile nav drawer */
+.nav-drawer {
+  display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 190;
+  background: rgba(5,12,16,0.97); backdrop-filter: blur(20px);
+  flex-direction: column; align-items: center; justify-content: center; gap: 32px;
+}
+.nav-drawer.open { display: flex; }
+.nav-drawer a { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--text); text-decoration: none; transition: color var(--transition); }
+.nav-drawer a:hover { color: var(--teal-light); }
+.nav-drawer-close { position: absolute; top: 24px; right: 24px; background: none; border: none; color: var(--text-muted); font-size: 1.8rem; cursor: pointer; line-height: 1; }
+
+/* ─── HERO ─── */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 40px;
+  padding: 110px 60px 70px;
+  position: relative; overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 70% at 75% 50%, rgba(13,110,122,0.28) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 40% at 15% 80%, rgba(26,154,171,0.1) 0%, transparent 60%);
+}
+.grid-overlay {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(30,154,171,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30,154,171,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.orb {
+  position: absolute; border-radius: 50%; filter: blur(72px); pointer-events: none;
+  animation: drift 14s ease-in-out infinite alternate;
+}
+.orb1 { width: 480px; height: 480px; background: rgba(13,110,122,0.18); top: -100px; right: -40px; }
+.orb2 { width: 280px; height: 280px; background: rgba(62,198,216,0.1); bottom: 5%; left: 10%; animation-duration: 11s; animation-delay: -5s; }
+@keyframes drift { 0%{transform:translate(0,0) scale(1)} 100%{transform:translate(28px,-22px) scale(1.07)} }
+
+/* LEFT COLUMN */
+.hero-content { position: relative; z-index: 2; }
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(62,198,216,0.08); border: 1px solid rgba(62,198,216,0.2);
+  padding: 7px 18px; border-radius: 50px; margin-bottom: 28px;
+  font-size: 0.76rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal-light);
+  animation: fadeUp 0.8s ease both;
+}
+.hero-badge .dot { width: 6px; height: 6px; background: var(--teal-light); border-radius: 50%; animation: pulse 2s ease infinite; flex-shrink: 0; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2.6rem, 5vw, 4.6rem);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  color: var(--white);
+  margin-bottom: 22px;
+  animation: fadeUp 0.8s 0.12s ease both;
+}
+.hero h1 em { font-style: normal; color: var(--teal-light); }
+.hero h1 .ul-wrap { position: relative; display: inline-block; }
+.hero h1 .ul-wrap::after {
+  content: ''; position: absolute; bottom: -3px; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--teal), transparent); border-radius: 2px;
+}
+
+.hero-sub {
+  font-size: 1.05rem; color: var(--text-muted); line-height: 1.75;
+  margin-bottom: 36px; font-weight: 300;
+  animation: fadeUp 0.8s 0.24s ease both;
+}
+
+.hero-pills {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 36px;
+  animation: fadeUp 0.8s 0.32s ease both;
+}
+.pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--surface); border: 1px solid rgba(62,198,216,0.12);
+  padding: 6px 14px; border-radius: 50px; font-size: 0.8rem; color: var(--text-muted);
+}
+.pill svg { width: 14px; height: 14px; stroke: var(--teal-light); fill: none; stroke-width: 2; }
+
+.hero-actions { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; animation: fadeUp 0.8s 0.4s ease both; }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--teal-dark), var(--teal-light));
+  color: white; border: none; padding: 15px 32px; border-radius: 50px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.97rem; font-weight: 500;
+  cursor: pointer; text-decoration: none; transition: all var(--transition);
+  box-shadow: 0 8px 36px rgba(26,154,171,0.35);
+  display: inline-flex; align-items: center; gap: 9px;
+}
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 48px rgba(26,154,171,0.55); }
+.btn-primary svg { width: 17px; height: 17px; transition: transform var(--transition); }
+.btn-primary:hover svg { transform: translateX(4px); }
+
+.btn-ghost {
+  color: var(--text-muted); text-decoration: none; font-size: 0.9rem;
+  display: inline-flex; align-items: center; gap: 8px; transition: color var(--transition);
+}
+.btn-ghost:hover { color: var(--teal-light); }
+.play-btn {
+  width: 38px; height: 38px; background: var(--surface); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid rgba(62,198,216,0.15); transition: all var(--transition); flex-shrink: 0;
+}
+.btn-ghost:hover .play-btn { background: var(--surface2); transform: scale(1.1); border-color: var(--teal); }
+.play-btn svg { width: 14px; height: 14px; fill: var(--teal-light); margin-left: 2px; }
+
+/* STATS ROW */
+.hero-stats {
+  display: flex; gap: 0; margin-top: 44px;
+  background: rgba(15,38,48,0.55); backdrop-filter: blur(16px);
+  border: 1px solid rgba(30,154,171,0.13); border-radius: 14px; overflow: hidden;
+  animation: fadeUp 0.8s 0.52s ease both;
+}
+.hero-stat { flex: 1; padding: 18px 20px; text-align: center; border-right: 1px solid rgba(30,154,171,0.1); }
+.hero-stat:last-child { border-right: none; }
+.hero-stat-n { font-family: 'Syne', sans-serif; font-size: 1.7rem; font-weight: 800; color: var(--teal-light); display: block; letter-spacing: -0.03em; }
+.hero-stat-l { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.07em; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+
+/* RIGHT COLUMN – visual */
+.hero-visual {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeUp 0.9s 0.2s ease both;
+}
+
+/* House illustration container */
+.house-scene {
+  position: relative; width: 100%; max-width: 520px;
+}
+
+/* Glow rings behind the house */
+.glow-ring {
+  position: absolute; border-radius: 50%; border: 1px solid rgba(62,198,216,0.1);
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  animation: ringPulse 7s ease-in-out infinite;
+}
+.glow-ring:nth-child(1) { width: 340px; height: 340px; animation-delay: 0s; }
+.glow-ring:nth-child(2) { width: 460px; height: 460px; animation-delay: 2.3s; }
+.glow-ring:nth-child(3) { width: 580px; height: 580px; animation-delay: 4.6s; }
+@keyframes ringPulse { 0%,100%{opacity:.55;transform:translate(-50%,-50%) scale(1)} 50%{opacity:.15;transform:translate(-50%,-50%) scale(1.04)} }
+
+/* The SVG house illustration */
+.house-svg-wrap {
+  position: relative; z-index: 2;
+  animation: floatHouse 6s ease-in-out infinite;
+  filter: drop-shadow(0 30px 60px rgba(13,110,122,0.35)) drop-shadow(0 0 80px rgba(62,198,216,0.12));
+}
+@keyframes floatHouse { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+
+/* Floating feature chips around the house */
+.chip {
+  position: absolute; z-index: 5;
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(7,19,26,0.85); backdrop-filter: blur(12px);
+  border: 1px solid rgba(62,198,216,0.22); border-radius: 50px;
+  padding: 8px 14px; font-size: 0.76rem; color: var(--text); white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  animation: chipFloat 5s ease-in-out infinite alternate;
+}
+.chip svg { width: 14px; height: 14px; stroke: var(--teal-light); fill: none; stroke-width: 2; flex-shrink: 0; }
+.chip-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; flex-shrink: 0; box-shadow: 0 0 6px #22c55e; }
+.chip1 { top: 8%; left: -4%; animation-delay: 0s; }
+.chip2 { top: 28%; right: -6%; animation-delay: 1.2s; animation-duration: 6s; }
+.chip3 { bottom: 18%; left: -2%; animation-delay: 2.1s; animation-duration: 4.5s; }
+.chip4 { bottom: 6%; right: 4%; animation-delay: 0.7s; animation-duration: 5.5s; }
+@keyframes chipFloat { 0%{transform:translateY(0)} 100%{transform:translateY(-10px)} }
+
+/* ─── SECTION COMMON ─── */
+section { padding: 90px 60px; }
+.section-tag { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--teal); margin-bottom: 14px; display: block; }
+.section-title { font-family: 'Syne', sans-serif; font-size: clamp(1.9rem, 3.5vw, 2.8rem); font-weight: 800; color: var(--white); letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 18px; }
+.section-desc { font-size: 1rem; color: var(--text-muted); line-height: 1.8; max-width: 540px; font-weight: 300; }
+
+/* ─── SERVICES ─── */
+.services { background: var(--bg2); }
+.services-header { text-align: center; margin-bottom: 56px; }
+.services-header .section-desc { margin: 0 auto; }
+.services-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 22px; max-width: 1100px; margin: 0 auto; }
+.service-card {
+  background: var(--surface); border: 1px solid rgba(30,154,171,0.1);
+  border-radius: var(--radius); padding: 32px 26px;
+  transition: all var(--transition); position: relative; overflow: hidden; cursor: pointer;
+}
+.service-card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(62,198,216,0.05),transparent 60%); opacity:0; transition:opacity var(--transition); }
+.service-card:hover { border-color:rgba(62,198,216,0.3); transform:translateY(-6px); box-shadow:0 20px 55px rgba(13,110,122,0.2); }
+.service-card:hover::before { opacity:1; }
+.service-icon { width:50px; height:50px; background:linear-gradient(135deg,var(--teal-dark),var(--teal)); border-radius:13px; display:flex; align-items:center; justify-content:center; margin-bottom:20px; transition:transform var(--transition); }
+.service-card:hover .service-icon { transform:scale(1.1) rotate(-5deg); }
+.service-icon svg { width:24px; height:24px; stroke:white; stroke-width:1.8; fill:none; }
+.service-card h3 { font-family:'Syne',sans-serif; font-weight:700; font-size:1.05rem; color:var(--white); margin-bottom:8px; }
+.service-card p { font-size:0.88rem; color:var(--text-muted); line-height:1.7; }
+
+/* ─── HOW ─── */
+.how { background: var(--bg); }
+.how-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:70px; align-items:center; }
+.how-steps { display:flex; flex-direction:column; }
+.step { display:flex; gap:22px; align-items:flex-start; padding:26px 0; border-bottom:1px solid rgba(30,154,171,0.08); }
+.step:last-child { border-bottom:none; }
+.step-num { width:42px; height:42px; min-width:42px; background:linear-gradient(135deg,var(--teal-dark),var(--teal)); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-weight:800; font-size:0.9rem; color:white; box-shadow:0 0 18px rgba(26,154,171,0.3); }
+.step-content h4 { font-family:'Syne',sans-serif; font-weight:700; color:var(--white); margin-bottom:5px; }
+.step-content p { font-size:0.88rem; color:var(--text-muted); line-height:1.65; }
+
+.how-visual { position:relative; display:flex; align-items:center; justify-content:center; min-height:400px; }
+.phone-mockup {
+  width:240px; background:#0b1e27; border-radius:34px;
+  border:2px solid rgba(62,198,216,0.2); padding:18px;
+  box-shadow:0 40px 80px rgba(0,0,0,0.5),0 0 50px rgba(26,154,171,0.14);
+  position:relative; z-index:2; animation:float 6s ease-in-out infinite;
+}
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-13px)} }
+.phone-notch { width:54px; height:7px; background:var(--bg); border-radius:4px; margin:0 auto 18px; }
+.phone-header { font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; color:white; margin-bottom:14px; }
+.phone-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+.phone-tile { background:var(--surface2); border-radius:12px; padding:12px 8px; text-align:center; border:1px solid rgba(62,198,216,0.1); display:flex; flex-direction:column; align-items:center; gap:7px; }
+.phone-tile svg { width:20px; height:20px; stroke:var(--teal-light); fill:none; stroke-width:1.8; }
+.phone-tile span { font-size:0.68rem; color:var(--text-muted); }
+.phone-tile.active { background:linear-gradient(135deg,rgba(13,110,122,0.4),rgba(62,198,216,0.1)); border-color:var(--teal); }
+.phone-tile.active span { color:var(--teal-light); }
+.visual-ring { position:absolute; border-radius:50%; border:1px solid rgba(62,198,216,0.1); animation:expand 8s ease-in-out infinite; }
+.ring1{width:290px;height:290px;animation-delay:0s}
+.ring2{width:390px;height:390px;animation-delay:2.5s}
+.ring3{width:490px;height:490px;animation-delay:5s}
+@keyframes expand { 0%,100%{opacity:.55;transform:scale(1)} 50%{opacity:.18;transform:scale(1.04)} }
+
+/* ─── CONTROL ─── */
+.control { background:var(--bg2); }
+.control-header { text-align:center; margin-bottom:48px; }
+.control-header .section-desc { margin:0 auto; }
+.control-items { display:flex; justify-content:center; flex-wrap:wrap; gap:16px; max-width:860px; margin:0 auto; }
+.control-item { background:var(--surface); border:1px solid rgba(30,154,171,0.1); border-radius:var(--radius); padding:24px 18px; text-align:center; width:120px; transition:all var(--transition); cursor:pointer; }
+.control-item:hover { border-color:var(--teal); transform:translateY(-5px); background:var(--surface2); }
+.control-item svg { width:30px; height:30px; stroke:var(--teal-light); fill:none; stroke-width:1.8; margin-bottom:10px; display:block; margin-inline:auto; }
+.control-item span { font-size:0.78rem; color:var(--text-muted); display:block; line-height:1.4; }
+
+/* ─── PRICING ─── */
+.pricing { background:var(--bg); }
+.pricing-header { text-align:center; margin-bottom:48px; }
+.pricing-card {
+  max-width:600px; margin:0 auto;
+  background:linear-gradient(135deg,var(--surface),var(--surface2));
+  border:1px solid rgba(62,198,216,0.25); border-radius:26px; padding:52px;
+  text-align:center; position:relative; overflow:hidden;
+  box-shadow:0 40px 80px rgba(0,0,0,0.4),0 0 70px rgba(26,154,171,0.07);
+}
+.pricing-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--teal-dark),var(--teal-light)); }
+.pricing-badge { display:inline-block; background:rgba(62,198,216,0.1); border:1px solid rgba(62,198,216,0.2); color:var(--teal-light); padding:5px 16px; border-radius:50px; font-size:0.72rem; letter-spacing:.15em; text-transform:uppercase; margin-bottom:24px; }
+.pricing-price { font-family:'Syne',sans-serif; font-size:3.2rem; font-weight:800; color:var(--white); line-height:1; }
+.pricing-price small { font-size:1.1rem; color:var(--text-muted); vertical-align:super; }
+.pricing-desc { color:var(--text-muted); margin:14px 0 32px; font-size:0.92rem; line-height:1.65; }
+.pricing-features { text-align:left; margin-bottom:36px; display:flex; flex-direction:column; gap:12px; }
+.pricing-feat { display:flex; align-items:center; gap:11px; font-size:0.9rem; color:var(--text); }
+.pricing-feat svg { width:17px; height:17px; stroke:var(--teal-light); fill:none; stroke-width:2.5; flex-shrink:0; }
+.btn-pricing { width:100%; background:linear-gradient(135deg,var(--teal-dark),var(--teal-light)); color:white; border:none; padding:17px; border-radius:50px; font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:500; cursor:pointer; transition:all var(--transition); box-shadow:0 8px 36px rgba(26,154,171,0.35); }
+.btn-pricing:hover { transform:translateY(-2px); box-shadow:0 12px 48px rgba(26,154,171,0.55); }
+
+/* ─── WHY ─── */
+.why { background:var(--bg2); }
+.why-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:70px; align-items:center; }
+.why-features { display:flex; flex-direction:column; gap:20px; }
+.why-feat { display:flex; gap:16px; align-items:flex-start; padding:20px; background:var(--surface); border-radius:14px; border:1px solid rgba(30,154,171,0.08); transition:all var(--transition); cursor:pointer; }
+.why-feat:hover { border-color:rgba(62,198,216,0.25); transform:translateX(6px); }
+.why-feat-icon { width:38px; height:38px; min-width:38px; background:rgba(26,154,171,0.12); border-radius:10px; display:flex; align-items:center; justify-content:center; }
+.why-feat-icon svg { width:19px; height:19px; stroke:var(--teal-light); fill:none; stroke-width:2; }
+.why-feat h4 { font-family:'Syne',sans-serif; font-weight:700; color:var(--white); font-size:0.93rem; margin-bottom:3px; }
+.why-feat p { font-size:0.84rem; color:var(--text-muted); line-height:1.6; }
+
+/* ─── CTA ─── */
+.cta-section { background:var(--bg); padding:90px 60px; text-align:center; position:relative; overflow:hidden; }
+.cta-section::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 70% 80% at 50% 50%,rgba(13,110,122,0.16),transparent 70%); }
+.cta-section .section-title { margin:0 auto 18px; }
+.cta-section .section-desc { margin:0 auto 40px; text-align:center; }
+.cta-section > * { position:relative; z-index:2; }
+.cta-actions { display:flex; justify-content:center; gap:14px; flex-wrap:wrap; }
+.btn-whatsapp { background:#25d366; color:white; border:none; padding:15px 32px; border-radius:50px; font-family:'DM Sans',sans-serif; font-size:0.97rem; font-weight:500; cursor:pointer; text-decoration:none; transition:all var(--transition); display:inline-flex; align-items:center; gap:9px; box-shadow:0 8px 28px rgba(37,211,102,0.28); }
+.btn-whatsapp:hover { transform:translateY(-3px); box-shadow:0 12px 38px rgba(37,211,102,0.5); }
+.btn-outline { border:1px solid rgba(62,198,216,0.3); color:var(--teal-light); padding:15px 32px; border-radius:50px; text-decoration:none; font-size:0.97rem; transition:all var(--transition); display:inline-flex; align-items:center; gap:9px; }
+.btn-outline:hover { background:rgba(62,198,216,0.08); border-color:var(--teal-light); transform:translateY(-3px); }
+
+/* ─── FOOTER ─── */
+footer { background:var(--bg2); border-top:1px solid rgba(30,154,171,0.1); padding:50px 60px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:24px; }
+.footer-info { font-size:0.8rem; color:var(--text-muted); line-height:1.8; }
+.footer-links { display:flex; gap:22px; flex-wrap:wrap; }
+.footer-links a { color:var(--text-muted); text-decoration:none; font-size:0.82rem; transition:color var(--transition); }
+.footer-links a:hover { color:var(--teal-light); }
+
+/* ─── SCROLL REVEAL ─── */
+.reveal { opacity:0; transform:translateY(26px); transition:opacity .65s ease,transform .65s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+.rd1{transition-delay:.1s} .rd2{transition-delay:.2s} .rd3{transition-delay:.3s} .rd4{transition-delay:.4s} .rd5{transition-delay:.5s}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+
+/* Tablet 1024 */
+@media(max-width:1024px) {
+  nav { padding:18px 32px; }
+  nav.scrolled { padding:12px 32px; }
+  .nav-links .hide-tab { display:none; }
+  .hero { padding:100px 32px 60px; gap:32px; }
+  section { padding:70px 32px; }
+  footer { padding:40px 32px; }
+  .cta-section { padding:70px 32px; }
+  .services-grid { grid-template-columns:repeat(2,1fr); }
+  .how-inner { gap:48px; }
+  .why-inner { gap:48px; }
+}
+
+/* Mobile 768 */
+@media(max-width:768px) {
+  body { cursor:auto; }
+  .cursor,.cursor-ring { display:none !important; }
+
+  nav { padding:16px 20px; }
+  nav.scrolled { padding:12px 20px; }
+  .nav-links { display:none; }
+  .nav-hamburger { display:flex; }
+
   .hero {
-    min-height: 100vh;
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 120px 60px 80px;
-    position: relative; overflow: hidden;
+    grid-template-columns:1fr;
+    min-height:auto;
+    padding:90px 20px 50px;
+    gap:48px;
   }
+  .hero-visual { order:-1; }
+  .house-scene { max-width:340px; margin:0 auto; }
+  .glow-ring:nth-child(1){width:240px;height:240px}
+  .glow-ring:nth-child(2){width:310px;height:310px}
+  .glow-ring:nth-child(3){width:380px;height:380px}
+  .chip { font-size:0.68rem; padding:6px 10px; }
+  .chip1{top:2%;left:-2%}
+  .chip2{top:22%;right:-4%}
+  .chip3{bottom:14%;left:-2%}
+  .chip4{bottom:2%;right:2%}
 
-  .hero-bg {
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse 80% 60% at 70% 50%, rgba(13,110,122,0.25) 0%, transparent 65%),
-                radial-gradient(ellipse 40% 40% at 20% 80%, rgba(26,154,171,0.1) 0%, transparent 60%);
-  }
+  .hero h1 { font-size:clamp(2.2rem,9vw,3rem); }
+  .hero-sub { font-size:0.97rem; }
+  .hero-stats { display:grid; grid-template-columns:1fr 1fr; }
+  .hero-stat { border-right:none; border-bottom:1px solid rgba(30,154,171,0.1); }
+  .hero-stat:nth-child(odd) { border-right:1px solid rgba(30,154,171,0.1); }
+  .hero-stat:nth-child(3),.hero-stat:nth-child(4) { border-bottom:none; }
 
-  .grid-overlay {
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(30,154,171,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(30,154,171,0.04) 1px, transparent 1px);
-    background-size: 60px 60px;
-  }
+  section { padding:60px 20px; }
+  .cta-section { padding:60px 20px; }
 
-  /* floating orbs */
-  .orb {
-    position: absolute; border-radius: 50%; filter: blur(70px); pointer-events: none; animation: drift 12s ease-in-out infinite alternate;
-  }
-  .orb1 { width: 420px; height: 420px; background: rgba(13,110,122,0.2); top: -80px; right: 5%; animation-duration: 14s; }
-  .orb2 { width: 260px; height: 260px; background: rgba(62,198,216,0.12); bottom: 10%; left: 15%; animation-duration: 10s; animation-delay: -5s; }
-  @keyframes drift { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(30px,-25px) scale(1.08); } }
+  .services-grid { grid-template-columns:1fr; gap:16px; }
 
-  .hero-content { position: relative; z-index: 2; max-width: 680px; }
+  .how-inner { grid-template-columns:1fr; gap:40px; }
+  .how-visual { display:none; }
 
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(62,198,216,0.08); border: 1px solid rgba(62,198,216,0.2);
-    padding: 7px 18px; border-radius: 50px; margin-bottom: 32px;
-    font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal-light);
-    animation: fadeUp 0.8s ease both;
-  }
-  .hero-badge .dot { width: 6px; height: 6px; background: var(--teal-light); border-radius: 50%; animation: pulse 2s ease infinite; }
-  @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
+  .why-inner { grid-template-columns:1fr; gap:36px; }
+  .why-feat:hover { transform:none; }
 
-  .hero h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(3rem, 6vw, 5.2rem);
-    font-weight: 800;
-    line-height: 1.03;
-    letter-spacing: -0.03em;
-    color: var(--white);
-    margin-bottom: 28px;
-    animation: fadeUp 0.8s 0.15s ease both;
-  }
-  .hero h1 em { font-style: normal; color: var(--teal-light); }
-  .hero h1 .underline { position: relative; display: inline-block; }
-  .hero h1 .underline::after {
-    content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, var(--teal), transparent);
-    border-radius: 2px;
-  }
+  footer { flex-direction:column; align-items:flex-start; padding:36px 20px; gap:20px; }
+  .footer-links { gap:16px; }
 
-  .hero-sub {
-    font-size: 1.15rem; color: var(--text-muted); line-height: 1.7;
-    margin-bottom: 44px; font-weight: 300;
-    animation: fadeUp 0.8s 0.3s ease both;
-  }
+  .pricing-card { padding:32px 22px; }
 
-  .hero-actions { display: flex; gap: 16px; align-items: center; animation: fadeUp 0.8s 0.45s ease both; flex-wrap: wrap; }
+  .cta-actions { flex-direction:column; align-items:center; }
+  .btn-whatsapp,.btn-outline { width:100%; justify-content:center; }
+}
 
-  .btn-primary {
-    background: linear-gradient(135deg, var(--teal-dark), var(--teal-light));
-    color: white; border: none; padding: 16px 36px; border-radius: 50px;
-    font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500;
-    cursor: none; text-decoration: none; transition: all var(--transition);
-    box-shadow: 0 8px 40px rgba(26,154,171,0.35);
-    display: inline-flex; align-items: center; gap: 10px;
-  }
-  .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 50px rgba(26,154,171,0.55); }
-  .btn-primary svg { width: 18px; height: 18px; transition: transform var(--transition); }
-  .btn-primary:hover svg { transform: translateX(4px); }
-
-  .btn-secondary {
-    color: var(--text-muted); text-decoration: none; font-size: 0.95rem;
-    display: inline-flex; align-items: center; gap: 8px; transition: color var(--transition);
-  }
-  .btn-secondary:hover { color: var(--teal-light); }
-  .btn-secondary svg { width: 36px; height: 36px; background: var(--surface); border-radius: 50%; padding: 9px; transition: all var(--transition); }
-  .btn-secondary:hover svg { background: var(--surface2); transform: scale(1.1); }
-
-  /* STATS BAR */
-  .stats-bar {
-    position: relative; z-index: 2;
-    display: flex; gap: 0; margin-top: 80px;
-    background: rgba(15,38,48,0.6); backdrop-filter: blur(20px);
-    border: 1px solid rgba(30,154,171,0.15); border-radius: var(--radius);
-    overflow: hidden; animation: fadeUp 0.8s 0.6s ease both;
-  }
-  .stat-item {
-    flex: 1; padding: 28px 32px; text-align: center;
-    border-right: 1px solid rgba(30,154,171,0.1);
-  }
-  .stat-item:last-child { border-right: none; }
-  .stat-num {
-    font-family: 'Syne', sans-serif; font-size: 2.2rem; font-weight: 800;
-    color: var(--teal-light); display: block; letter-spacing: -0.03em;
-  }
-  .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
-
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-  /* SECTION COMMON */
-  section { padding: 100px 60px; }
-  .section-tag {
-    font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--teal); margin-bottom: 16px; display: block;
-  }
-  .section-title {
-    font-family: 'Syne', sans-serif; font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 800; color: var(--white); letter-spacing: -0.03em; line-height: 1.1;
-    margin-bottom: 20px;
-  }
-  .section-desc { font-size: 1.05rem; color: var(--text-muted); line-height: 1.8; max-width: 540px; font-weight: 300; }
-
-  /* SERVICES */
-  .services { background: var(--bg2); }
-  .services-header { text-align: center; margin-bottom: 64px; }
-  .services-header .section-desc { margin: 0 auto; }
-
-  .services-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1100px; margin: 0 auto;
-  }
-
-  .service-card {
-    background: var(--surface); border: 1px solid rgba(30,154,171,0.1);
-    border-radius: var(--radius); padding: 36px 30px;
-    transition: all var(--transition); position: relative; overflow: hidden; cursor: none;
-  }
-  .service-card::before {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(62,198,216,0.05) 0%, transparent 60%);
-    opacity: 0; transition: opacity var(--transition);
-  }
-  .service-card:hover { border-color: rgba(62,198,216,0.3); transform: translateY(-6px); box-shadow: 0 20px 60px rgba(13,110,122,0.2); }
-  .service-card:hover::before { opacity: 1; }
-
-  .service-icon {
-    width: 52px; height: 52px; background: linear-gradient(135deg, var(--teal-dark), var(--teal));
-    border-radius: 14px; display: flex; align-items: center; justify-content: center;
-    margin-bottom: 24px; transition: transform var(--transition);
-  }
-  .service-card:hover .service-icon { transform: scale(1.1) rotate(-5deg); }
-  .service-icon svg { width: 26px; height: 26px; stroke: white; stroke-width: 1.8; fill: none; }
-
-  .service-card h3 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--white); margin-bottom: 10px; }
-  .service-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
-
-  /* CÓMO FUNCIONA */
-  .how { background: var(--bg); }
-  .how-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-  .how-steps { display: flex; flex-direction: column; gap: 0; }
-
-  .step {
-    display: flex; gap: 24px; align-items: flex-start;
-    padding: 28px 0; border-bottom: 1px solid rgba(30,154,171,0.08);
-    position: relative;
-  }
-  .step:last-child { border-bottom: none; }
-  .step-num {
-    width: 44px; height: 44px; min-width: 44px;
-    background: linear-gradient(135deg, var(--teal-dark), var(--teal));
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.95rem; color: white;
-    box-shadow: 0 0 20px rgba(26,154,171,0.3);
-  }
-  .step-content h4 { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--white); margin-bottom: 6px; }
-  .step-content p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
-
-  .how-visual {
-    position: relative; display: flex; align-items: center; justify-content: center;
-  }
-  .phone-mockup {
-    width: 260px; background: #0b1e27; border-radius: 36px;
-    border: 2px solid rgba(62,198,216,0.2); padding: 20px;
-    box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 60px rgba(26,154,171,0.15);
-    position: relative; z-index: 2;
-    animation: float 6s ease-in-out infinite;
-  }
-  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
-  .phone-notch { width: 60px; height: 8px; background: var(--bg); border-radius: 4px; margin: 0 auto 20px; }
-  .phone-header { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; color: white; margin-bottom: 18px; }
-  .phone-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .phone-tile {
-    background: var(--surface2); border-radius: 14px; padding: 14px 10px; text-align: center;
-    border: 1px solid rgba(62,198,216,0.1);
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-  }
-  .phone-tile svg { width: 22px; height: 22px; stroke: var(--teal-light); fill: none; stroke-width: 1.8; }
-  .phone-tile span { font-size: 0.72rem; color: var(--text-muted); }
-  .phone-tile.active { background: linear-gradient(135deg, rgba(13,110,122,0.4), rgba(62,198,216,0.1)); border-color: var(--teal); }
-  .phone-tile.active svg { stroke: var(--teal-light); }
-  .phone-tile.active span { color: var(--teal-light); }
-
-  .visual-ring {
-    position: absolute; border-radius: 50%; border: 1px solid rgba(62,198,216,0.12);
-    animation: expand 8s ease-in-out infinite;
-  }
-  .ring1 { width: 320px; height: 320px; animation-delay: 0s; }
-  .ring2 { width: 420px; height: 420px; animation-delay: 2s; }
-  .ring3 { width: 520px; height: 520px; animation-delay: 4s; }
-  @keyframes expand { 0%,100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 0.2; transform: scale(1.04); } }
-
-  /* CONTROLA */
-  .control { background: var(--bg2); }
-  .control-header { text-align: center; margin-bottom: 56px; }
-  .control-header .section-desc { margin: 0 auto; }
-  .control-items { display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; max-width: 900px; margin: 0 auto; }
-  .control-item {
-    background: var(--surface); border: 1px solid rgba(30,154,171,0.1);
-    border-radius: var(--radius); padding: 28px 22px; text-align: center; width: 130px;
-    transition: all var(--transition); cursor: none;
-  }
-  .control-item:hover { border-color: var(--teal); transform: translateY(-5px); background: var(--surface2); }
-  .control-item svg { width: 32px; height: 32px; stroke: var(--teal-light); fill: none; stroke-width: 1.8; margin-bottom: 12px; }
-  .control-item span { font-size: 0.82rem; color: var(--text-muted); display: block; line-height: 1.4; }
-
-  /* PLANES */
-  .pricing { background: var(--bg); }
-  .pricing-header { text-align: center; margin-bottom: 56px; }
-  .pricing-card {
-    max-width: 620px; margin: 0 auto;
-    background: linear-gradient(135deg, var(--surface), var(--surface2));
-    border: 1px solid rgba(62,198,216,0.25); border-radius: 28px; padding: 60px;
-    text-align: center; position: relative; overflow: hidden;
-    box-shadow: 0 40px 80px rgba(0,0,0,0.4), 0 0 80px rgba(26,154,171,0.08);
-  }
-  .pricing-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, var(--teal-dark), var(--teal-light));
-  }
-  .pricing-badge {
-    display: inline-block; background: rgba(62,198,216,0.1); border: 1px solid rgba(62,198,216,0.2);
-    color: var(--teal-light); padding: 6px 18px; border-radius: 50px;
-    font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 28px;
-  }
-  .pricing-price { font-family: 'Syne', sans-serif; font-size: 3.5rem; font-weight: 800; color: var(--white); line-height: 1; }
-  .pricing-price small { font-size: 1.2rem; color: var(--text-muted); vertical-align: super; }
-  .pricing-desc { color: var(--text-muted); margin: 16px 0 36px; font-size: 0.95rem; }
-  .pricing-features { text-align: left; margin-bottom: 40px; display: flex; flex-direction: column; gap: 14px; }
-  .pricing-feat { display: flex; align-items: center; gap: 12px; font-size: 0.92rem; color: var(--text); }
-  .pricing-feat svg { width: 18px; height: 18px; stroke: var(--teal-light); fill: none; stroke-width: 2.5; flex-shrink: 0; }
-  .btn-pricing {
-    width: 100%; background: linear-gradient(135deg, var(--teal-dark), var(--teal-light));
-    color: white; border: none; padding: 18px; border-radius: 50px;
-    font-family: 'DM Sans', sans-serif; font-size: 1.05rem; font-weight: 500;
-    cursor: none; transition: all var(--transition);
-    box-shadow: 0 8px 40px rgba(26,154,171,0.35);
-  }
-  .btn-pricing:hover { transform: translateY(-2px); box-shadow: 0 12px 50px rgba(26,154,171,0.55); }
-
-  /* POR QUÉ */
-  .why { background: var(--bg2); }
-  .why-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
-  .why-features { display: flex; flex-direction: column; gap: 24px; }
-  .why-feat {
-    display: flex; gap: 18px; align-items: flex-start; padding: 22px;
-    background: var(--surface); border-radius: 14px; border: 1px solid rgba(30,154,171,0.08);
-    transition: all var(--transition); cursor: none;
-  }
-  .why-feat:hover { border-color: rgba(62,198,216,0.25); transform: translateX(6px); }
-  .why-feat-icon {
-    width: 40px; height: 40px; min-width: 40px; background: rgba(26,154,171,0.12);
-    border-radius: 10px; display: flex; align-items: center; justify-content: center;
-  }
-  .why-feat-icon svg { width: 20px; height: 20px; stroke: var(--teal-light); fill: none; stroke-width: 2; }
-  .why-feat h4 { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--white); font-size: 0.95rem; margin-bottom: 4px; }
-  .why-feat p { font-size: 0.86rem; color: var(--text-muted); line-height: 1.6; }
-
-  /* CTA */
-  .cta-section {
-    background: var(--bg); padding: 100px 60px; text-align: center;
-    position: relative; overflow: hidden;
-  }
-  .cta-section::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse 70% 80% at 50% 50%, rgba(13,110,122,0.18) 0%, transparent 70%);
-  }
-  .cta-section .section-title { margin: 0 auto 20px; }
-  .cta-section .section-desc { margin: 0 auto 44px; text-align: center; }
-  .cta-section > * { position: relative; z-index: 2; }
-  .cta-actions { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; }
-  .btn-whatsapp {
-    background: #25d366; color: white; border: none;
-    padding: 16px 36px; border-radius: 50px;
-    font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500;
-    cursor: none; text-decoration: none; transition: all var(--transition);
-    display: inline-flex; align-items: center; gap: 10px;
-    box-shadow: 0 8px 30px rgba(37,211,102,0.3);
-  }
-  .btn-whatsapp:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(37,211,102,0.5); }
-  .btn-outline {
-    border: 1px solid rgba(62,198,216,0.3); color: var(--teal-light);
-    padding: 16px 36px; border-radius: 50px; text-decoration: none; font-size: 1rem;
-    transition: all var(--transition); display: inline-flex; align-items: center; gap: 10px;
-  }
-  .btn-outline:hover { background: rgba(62,198,216,0.08); border-color: var(--teal-light); transform: translateY(-3px); }
-
-  /* FOOTER */
-  footer {
-    background: var(--bg2); border-top: 1px solid rgba(30,154,171,0.1);
-    padding: 60px; display: flex; align-items: center; justify-content: space-between; flex-wrap: gap;
-    gap: 24px;
-  }
-  .footer-logo { display: flex; align-items: center; gap: 12px; }
-  .footer-info { font-size: 0.82rem; color: var(--text-muted); line-height: 1.8; }
-  .footer-links { display: flex; gap: 24px; }
-  .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.85rem; transition: color var(--transition); }
-  .footer-links a:hover { color: var(--teal-light); }
-
-  /* SCROLL REVEAL */
-  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-  .reveal-delay-1 { transition-delay: 0.1s; }
-  .reveal-delay-2 { transition-delay: 0.2s; }
-  .reveal-delay-3 { transition-delay: 0.3s; }
-  .reveal-delay-4 { transition-delay: 0.4s; }
-  .reveal-delay-5 { transition-delay: 0.5s; }
+/* Small mobile 480 */
+@media(max-width:480px) {
+  .hero h1 { font-size:2rem; }
+  .hero-pills { gap:7px; }
+  .pill { font-size:0.72rem; padding:5px 10px; }
+  .btn-primary { width:100%; justify-content:center; }
+  .hero-actions { flex-direction:column; align-items:flex-start; }
+  .control-item { width:calc(33% - 12px); min-width:90px; padding:18px 10px; }
+  .services-grid { gap:12px; }
+  .service-card { padding:24px 18px; }
+  .hero-stats { font-size:0.8rem; }
+  .hero-stat-n { font-size:1.4rem; }
+}
 </style>
 </head>
 <body>
@@ -409,57 +474,373 @@
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
-<!-- NAV -->
+<!-- ── MOBILE NAV DRAWER ── -->
+<div class="nav-drawer" id="navDrawer">
+  <button class="nav-drawer-close" id="drawerClose">×</button>
+  <a href="#servicios" onclick="closeDrawer()">Servicios</a>
+  <a href="#como-funciona" onclick="closeDrawer()">Cómo funciona</a>
+  <a href="#planes" onclick="closeDrawer()">Planes</a>
+  <a href="#por-que" onclick="closeDrawer()">¿Por qué?</a>
+  <a href="#contacto" onclick="closeDrawer()" style="color:var(--teal-light)">Cotizar ahora →</a>
+</div>
+
+<!-- ── NAV ── -->
 <nav id="navbar">
-  <div class="logo-area">
+  <a class="logo-area" href="#">
     <div class="logo-icon">
-      <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1z"/><path d="M8.5 13a2 2 0 104 0 2 2 0 00-4 0"/><path d="M12 11V9M10 15.5c1.38.67 2.62.67 4 0"/></svg>
+      <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1z"/><path d="M9.5 21V13h5v8"/><path d="M12 6.5a1 1 0 100 2 1 1 0 000-2z" fill="white" stroke="none"/></svg>
     </div>
     <div>
       <div class="logo-text"><span>NEX</span>HOME</div>
       <span class="logo-sub">Smart Living</span>
     </div>
-  </div>
+  </a>
   <div class="nav-links">
-    <a href="#servicios">Servicios</a>
-    <a href="#como-funciona">Cómo funciona</a>
+    <a href="#servicios" class="hide-tab">Servicios</a>
+    <a href="#como-funciona" class="hide-tab">Cómo funciona</a>
     <a href="#planes">Planes</a>
     <a href="#contacto" class="nav-cta">Cotizar ahora</a>
   </div>
+  <button class="nav-hamburger" id="hamburger" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
-<!-- HERO -->
-<section class="hero">
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero" id="inicio">
   <div class="hero-bg"></div>
   <div class="grid-overlay"></div>
   <div class="orb orb1"></div>
   <div class="orb orb2"></div>
 
+  <!-- LEFT: TEXT -->
   <div class="hero-content">
-    <div class="hero-badge"><div class="dot"></div> Automatización del hogar</div>
-    <h1>Convierte tu casa<br>en <em class="underline">inteligente</em></h1>
-    <p class="hero-sub">Tecnología, comodidad y seguridad al alcance de tu mano.<br>Controla tu hogar desde cualquier lugar con una sola app.</p>
+    <div class="hero-badge"><div class="dot"></div>Automatización del hogar</div>
+
+    <h1>Convierte tu casa<br>en <em class="ul-wrap">inteligente</em></h1>
+
+    <p class="hero-sub">Tecnología, comodidad y seguridad al alcance de tu mano. Controla tu hogar desde cualquier lugar, con una sola aplicación.</p>
+
+    <div class="hero-pills">
+      <div class="pill"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>Control celular</div>
+      <div class="pill"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg>Comandos de voz</div>
+      <div class="pill"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Seguridad 24/7</div>
+      <div class="pill"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>Ahorro energía</div>
+    </div>
+
     <div class="hero-actions">
       <a href="#contacto" class="btn-primary">
         Cotizar gratis
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </a>
-      <a href="#como-funciona" class="btn-secondary">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      <a href="#como-funciona" class="btn-ghost">
+        <div class="play-btn">
+          <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
         Ver cómo funciona
       </a>
     </div>
 
-    <div class="stats-bar">
-      <div class="stat-item"><span class="stat-num">100%</span><span class="stat-label">Personalizado</span></div>
-      <div class="stat-item"><span class="stat-num">24/7</span><span class="stat-label">Seguridad</span></div>
-      <div class="stat-item"><span class="stat-num">1 App</span><span class="stat-label">Control total</span></div>
-      <div class="stat-item"><span class="stat-num">Pro</span><span class="stat-label">Instalación</span></div>
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="hero-stat-n">100%</span><span class="hero-stat-l">Personalizado</span></div>
+      <div class="hero-stat"><span class="hero-stat-n">24/7</span><span class="hero-stat-l">Seguridad</span></div>
+      <div class="hero-stat"><span class="hero-stat-n">1 App</span><span class="hero-stat-l">Control total</span></div>
+      <div class="hero-stat"><span class="hero-stat-n">Pro</span><span class="hero-stat-l">Instalación</span></div>
     </div>
   </div>
+
+  <!-- RIGHT: VISUAL -->
+  <div class="hero-visual">
+    <div class="house-scene">
+      <!-- Glow rings -->
+      <div class="glow-ring"></div>
+      <div class="glow-ring"></div>
+      <div class="glow-ring"></div>
+
+      <!-- Floating chips -->
+      <div class="chip chip1">
+        <div class="chip-dot"></div>
+        <svg viewBox="0 0 24 24"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/><circle cx="12" cy="12" r="5"/></svg>
+        Luces automáticas
+      </div>
+      <div class="chip chip2">
+        <div class="chip-dot"></div>
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Seguridad activa
+      </div>
+      <div class="chip chip3">
+        <div class="chip-dot"></div>
+        <svg viewBox="0 0 24 24"><path d="M12 22a9 9 0 110-18 9 9 0 010 18z"/><path d="M12 8v4l3 3"/></svg>
+        Clima 22°C
+      </div>
+      <div class="chip chip4">
+        <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        –38% energía
+      </div>
+
+      <!-- House SVG Illustration -->
+      <div class="house-svg-wrap">
+        <svg viewBox="0 0 480 420" xmlns="http://www.w3.org/2000/svg" width="100%" style="max-width:480px">
+          <defs>
+            <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#050c10"/>
+              <stop offset="100%" stop-color="#07131a"/>
+            </linearGradient>
+            <linearGradient id="roofGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0f3040"/>
+              <stop offset="100%" stop-color="#0b2230"/>
+            </linearGradient>
+            <linearGradient id="wallGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0f2d3c"/>
+              <stop offset="100%" stop-color="#0b2232"/>
+            </linearGradient>
+            <linearGradient id="glassGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#1a5a70" stop-opacity="0.7"/>
+              <stop offset="100%" stop-color="#0d3d52" stop-opacity="0.9"/>
+            </linearGradient>
+            <linearGradient id="glassWarm" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#2a7a50" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#1a5a38" stop-opacity="0.7"/>
+            </linearGradient>
+            <linearGradient id="tealGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#0d6e7a"/>
+              <stop offset="100%" stop-color="#3ec6d8"/>
+            </linearGradient>
+            <linearGradient id="groundGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0f2d3c"/>
+              <stop offset="100%" stop-color="#07131a"/>
+            </linearGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="winGlow">
+              <feGaussianBlur stdDeviation="5" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#3ec6d8" stop-opacity="0.15"/>
+              <stop offset="100%" stop-color="#3ec6d8" stop-opacity="0"/>
+            </radialGradient>
+            <clipPath id="houseClip">
+              <rect x="80" y="145" width="320" height="220"/>
+            </clipPath>
+          </defs>
+
+          <!-- Sky / background -->
+          <rect width="480" height="420" fill="url(#skyGrad)"/>
+
+          <!-- Stars -->
+          <circle cx="60" cy="30" r="1.5" fill="#3ec6d8" opacity="0.6" filter="url(#glow)"/>
+          <circle cx="400" cy="20" r="1" fill="#3ec6d8" opacity="0.5"/>
+          <circle cx="310" cy="50" r="1.5" fill="#7aacba" opacity="0.4"/>
+          <circle cx="150" cy="45" r="1" fill="#3ec6d8" opacity="0.6"/>
+          <circle cx="440" cy="60" r="2" fill="#3ec6d8" opacity="0.3" filter="url(#glow)"/>
+          <circle cx="30" cy="80" r="1" fill="#7aacba" opacity="0.5"/>
+          <circle cx="460" cy="100" r="1.5" fill="#3ec6d8" opacity="0.4"/>
+          <circle cx="200" cy="25" r="1" fill="white" opacity="0.4"/>
+          <circle cx="350" cy="75" r="1" fill="white" opacity="0.3"/>
+
+          <!-- Moon glow -->
+          <circle cx="390" cy="55" r="60" fill="url(#moonGlow)"/>
+          <circle cx="390" cy="55" r="18" fill="none" stroke="#3ec6d8" stroke-width="0.5" opacity="0.3"/>
+          <circle cx="390" cy="55" r="11" fill="#0f2d3c" stroke="#3ec6d8" stroke-width="0.8" opacity="0.6"/>
+
+          <!-- Trees left -->
+          <ellipse cx="58" cy="230" rx="28" ry="60" fill="#0b2030" opacity="0.7"/>
+          <rect x="54" y="285" width="8" height="30" fill="#0a1c28"/>
+          <ellipse cx="38" cy="260" rx="20" ry="45" fill="#091a26" opacity="0.5"/>
+
+          <!-- Trees right -->
+          <ellipse cx="422" cy="220" rx="26" ry="55" fill="#0b2030" opacity="0.7"/>
+          <rect x="418" y="270" width="8" height="28" fill="#0a1c28"/>
+
+          <!-- Ground -->
+          <rect x="0" y="340" width="480" height="80" fill="url(#groundGrad)"/>
+          <!-- Ground detail -->
+          <path d="M0 340 Q120 330 240 342 Q360 354 480 340 L480 350 Q360 364 240 352 Q120 340 0 350Z" fill="#0d2535" opacity="0.5"/>
+
+          <!-- Driveway -->
+          <path d="M180 365 L200 420 L280 420 L300 365Z" fill="#0a1e2c" stroke="#0d3040" stroke-width="1"/>
+          <line x1="240" y1="365" x2="240" y2="420" stroke="#1a4a5c" stroke-width="1" stroke-dasharray="6,6" opacity="0.4"/>
+
+          <!-- ── MAIN HOUSE BODY ── -->
+          <!-- Foundation -->
+          <rect x="80" y="330" width="320" height="15" rx="2" fill="#0a2030"/>
+
+          <!-- Main wall -->
+          <rect x="85" y="148" width="310" height="185" fill="url(#wallGrad)" rx="3"/>
+
+          <!-- Wall accents/panels -->
+          <rect x="85" y="148" width="310" height="4" fill="#1a4d62" opacity="0.5"/>
+          <line x1="240" y1="152" x2="240" y2="333" stroke="#0d3040" stroke-width="1.5" opacity="0.4"/>
+          <rect x="85" y="245" width="310" height="2" fill="#0d3040" opacity="0.5"/>
+
+          <!-- Left section darker -->
+          <rect x="85" y="152" width="155" height="181" fill="#0b2535" opacity="0.3"/>
+
+          <!-- ── ROOF ── -->
+          <!-- Main roof shape -->
+          <path d="M60 155 L240 60 L420 155 Z" fill="url(#roofGrad)"/>
+          <!-- Roof edge trim -->
+          <path d="M60 155 L240 60 L420 155" fill="none" stroke="url(#tealGrad)" stroke-width="2.5" opacity="0.7"/>
+          <!-- Roof overhang bottom -->
+          <path d="M55 158 L240 62 L425 158 L425 165 L240 68 L55 165Z" fill="#0a1e2c" opacity="0.6"/>
+
+          <!-- Chimney -->
+          <rect x="340" y="88" width="28" height="50" rx="3" fill="#0c2535"/>
+          <rect x="337" y="85" width="34" height="8" rx="2" fill="#0f2d3c"/>
+          <!-- Chimney glow -->
+          <ellipse cx="354" cy="83" rx="8" ry="5" fill="#3ec6d8" opacity="0.08"/>
+
+          <!-- Dormer window -->
+          <path d="M190 100 L240 65 L290 100 Z" fill="#0f2d3c"/>
+          <path d="M190 100 L240 65 L290 100" fill="none" stroke="#1a9aab" stroke-width="1.5" opacity="0.5"/>
+          <rect x="210" y="93" width="60" height="30" rx="3" fill="url(#glassGrad)" filter="url(#winGlow)"/>
+          <line x1="240" y1="93" x2="240" y2="123" stroke="#3ec6d8" stroke-width="0.8" opacity="0.4"/>
+          <line x1="210" y1="108" x2="270" y2="108" stroke="#3ec6d8" stroke-width="0.8" opacity="0.4"/>
+
+          <!-- ── GARAGE (left) ── -->
+          <rect x="90" y="220" width="130" height="115" rx="3" fill="#091e2c"/>
+          <!-- Garage door -->
+          <rect x="95" y="228" width="120" height="95" rx="4" fill="#0c2535"/>
+          <!-- Garage door panels -->
+          <rect x="95" y="248" width="120" height="2" fill="#1a4d62" opacity="0.4"/>
+          <rect x="95" y="268" width="120" height="2" fill="#1a4d62" opacity="0.4"/>
+          <rect x="95" y="288" width="120" height="2" fill="#1a4d62" opacity="0.4"/>
+          <rect x="95" y="308" width="120" height="2" fill="#1a4d62" opacity="0.4"/>
+          <line x1="155" y1="228" x2="155" y2="323" stroke="#1a4d62" stroke-width="1.5" opacity="0.4"/>
+          <!-- Garage handle -->
+          <rect x="146" y="272" width="18" height="4" rx="2" fill="#1a9aab" opacity="0.6"/>
+          <!-- Garage glow bottom -->
+          <rect x="95" y="318" width="120" height="3" fill="url(#tealGrad)" opacity="0.15"/>
+
+          <!-- ── WINDOWS ── -->
+
+          <!-- Upper left window -->
+          <rect x="106" y="166" width="52" height="42" rx="4" fill="url(#glassGrad)" filter="url(#winGlow)"/>
+          <line x1="132" y1="166" x2="132" y2="208" stroke="#3ec6d8" stroke-width="0.8" opacity="0.5"/>
+          <line x1="106" y1="187" x2="158" y2="187" stroke="#3ec6d8" stroke-width="0.8" opacity="0.5"/>
+          <!-- Window frame -->
+          <rect x="106" y="166" width="52" height="42" rx="4" fill="none" stroke="#1a9aab" stroke-width="1" opacity="0.5"/>
+          <!-- Window glow -->
+          <rect x="106" y="166" width="52" height="42" rx="4" fill="#3ec6d8" opacity="0.04"/>
+
+          <!-- Upper right window (lit warm) -->
+          <rect x="278" y="166" width="52" height="42" rx="4" fill="url(#glassWarm)" filter="url(#winGlow)"/>
+          <line x1="304" y1="166" x2="304" y2="208" stroke="#4ade80" stroke-width="0.8" opacity="0.4"/>
+          <line x1="278" y1="187" x2="330" y2="187" stroke="#4ade80" stroke-width="0.8" opacity="0.4"/>
+          <rect x="278" y="166" width="52" height="42" rx="4" fill="none" stroke="#22c55e" stroke-width="1" opacity="0.4"/>
+          <rect x="278" y="166" width="52" height="42" rx="4" fill="#22c55e" opacity="0.04"/>
+
+          <!-- Large living room window -->
+          <rect x="248" y="222" width="115" height="80" rx="5" fill="url(#glassGrad)" filter="url(#winGlow)"/>
+          <line x1="305" y1="222" x2="305" y2="302" stroke="#3ec6d8" stroke-width="1" opacity="0.5"/>
+          <line x1="248" y1="262" x2="363" y2="262" stroke="#3ec6d8" stroke-width="1" opacity="0.5"/>
+          <rect x="248" y="222" width="115" height="80" rx="5" fill="none" stroke="#1a9aab" stroke-width="1.5" opacity="0.6"/>
+          <!-- TV inside -->
+          <rect x="268" y="238" width="32" height="20" rx="2" fill="#0a1e2c"/>
+          <rect x="270" y="240" width="28" height="16" rx="1" fill="#3ec6d8" opacity="0.15"/>
+          <!-- Plant inside right window -->
+          <ellipse cx="340" cy="280" rx="10" ry="14" fill="#0d3d22" opacity="0.6"/>
+          <line x1="340" y1="280" x2="340" y2="302" stroke="#0a2c1a" stroke-width="3"/>
+
+          <!-- ── FRONT DOOR ── -->
+          <rect x="210" y="255" width="62" height="80" rx="5" fill="#091c2c"/>
+          <rect x="214" y="259" width="54" height="76" rx="4" fill="#0b2535"/>
+          <!-- Door panels -->
+          <rect x="218" y="263" width="22" height="28" rx="3" fill="#0d3040" stroke="#1a4d62" stroke-width="0.8"/>
+          <rect x="244" y="263" width="22" height="28" rx="3" fill="#0d3040" stroke="#1a4d62" stroke-width="0.8"/>
+          <!-- Door handle -->
+          <circle cx="236" cy="308" r="3" fill="#3ec6d8" opacity="0.8"/>
+          <!-- Door glass top -->
+          <rect x="218" y="297" width="48" height="30" rx="3" fill="url(#glassGrad)" opacity="0.5"/>
+          <line x1="242" y1="297" x2="242" y2="327" stroke="#3ec6d8" stroke-width="0.8" opacity="0.3"/>
+          <!-- Door glow bottom -->
+          <rect x="210" y="330" width="62" height="3" fill="url(#tealGrad)" opacity="0.2"/>
+
+          <!-- Door step -->
+          <rect x="200" y="333" width="82" height="6" rx="3" fill="#0f2d3c" stroke="#1a4d62" stroke-width="0.8"/>
+
+          <!-- ── SMART HOME ELEMENTS ── -->
+
+          <!-- WiFi / signal on roof peak -->
+          <g transform="translate(240,68)" filter="url(#glow)" opacity="0.7">
+            <path d="M-12 -4 Q0 -16 12 -4" fill="none" stroke="#3ec6d8" stroke-width="1.8" stroke-linecap="round"/>
+            <path d="M-7 -1 Q0 -9 7 -1" fill="none" stroke="#3ec6d8" stroke-width="1.8" stroke-linecap="round"/>
+            <circle cx="0" cy="1" r="2" fill="#3ec6d8"/>
+          </g>
+
+          <!-- Solar panels on roof -->
+          <g opacity="0.55">
+            <rect x="150" y="115" width="28" height="16" rx="2" fill="#0d3d52" stroke="#1a9aab" stroke-width="0.8"/>
+            <line x1="150" y1="123" x2="178" y2="123" stroke="#1a9aab" stroke-width="0.5"/>
+            <line x1="164" y1="115" x2="164" y2="131" stroke="#1a9aab" stroke-width="0.5"/>
+            <rect x="184" y="107" width="28" height="16" rx="2" fill="#0d3d52" stroke="#1a9aab" stroke-width="0.8"/>
+            <line x1="184" y1="115" x2="212" y2="115" stroke="#1a9aab" stroke-width="0.5"/>
+            <line x1="198" y1="107" x2="198" y2="123" stroke="#1a9aab" stroke-width="0.5"/>
+          </g>
+
+          <!-- Security camera top-right -->
+          <g transform="translate(355,165)" opacity="0.7" filter="url(#glow)">
+            <rect x="-4" y="-4" width="16" height="10" rx="3" fill="#0f2d3c" stroke="#1a9aab" stroke-width="1"/>
+            <circle cx="14" cy="1" r="4" fill="#0d3040" stroke="#1a9aab" stroke-width="1"/>
+            <circle cx="14" cy="1" r="2" fill="#3ec6d8" opacity="0.3"/>
+            <rect x="-2" y="-2" width="2" height="6" fill="#1a9aab"/>
+          </g>
+
+          <!-- Porch light left -->
+          <g transform="translate(96,256)" filter="url(#glow)">
+            <rect x="-3" y="-12" width="6" height="12" rx="2" fill="#0f2d3c" stroke="#1a9aab" stroke-width="0.8"/>
+            <ellipse cx="0" cy="0" rx="5" ry="4" fill="#3ec6d8" opacity="0.4"/>
+            <ellipse cx="0" cy="2" rx="12" ry="8" fill="#3ec6d8" opacity="0.05"/>
+          </g>
+
+          <!-- Porch light right of door -->
+          <g transform="translate(384,256)" filter="url(#glow)">
+            <rect x="-3" y="-12" width="6" height="12" rx="2" fill="#0f2d3c" stroke="#1a9aab" stroke-width="0.8"/>
+            <ellipse cx="0" cy="0" rx="5" ry="4" fill="#3ec6d8" opacity="0.4"/>
+          </g>
+
+          <!-- ── TEAL ACCENT LINE ── -->
+          <line x1="85" y1="334" x2="395" y2="334" stroke="url(#tealGrad)" stroke-width="1.5" opacity="0.35"/>
+
+          <!-- Ground glow under house -->
+          <ellipse cx="240" cy="345" rx="170" ry="18" fill="#1a9aab" opacity="0.05"/>
+
+          <!-- Subtle teal window glow on ground -->
+          <ellipse cx="305" cy="340" rx="55" ry="10" fill="#1a9aab" opacity="0.06"/>
+          <ellipse cx="241" cy="342" rx="30" ry="8" fill="#1a9aab" opacity="0.05"/>
+
+          <!-- Fence left -->
+          <g opacity="0.4" stroke="#1a4d62" stroke-width="1.2" fill="none">
+            <line x1="85" y1="320" x2="85" y2="355"/>
+            <line x1="78" y1="316" x2="78" y2="358"/>
+            <line x1="71" y1="320" x2="71" y2="355"/>
+            <line x1="70" y1="328" x2="86" y2="328"/>
+            <line x1="70" y1="344" x2="86" y2="344"/>
+          </g>
+
+          <!-- Fence right -->
+          <g opacity="0.4" stroke="#1a4d62" stroke-width="1.2" fill="none">
+            <line x1="395" y1="320" x2="395" y2="355"/>
+            <line x1="402" y1="316" x2="402" y2="358"/>
+            <line x1="409" y1="320" x2="409" y2="355"/>
+            <line x1="394" y1="328" x2="410" y2="328"/>
+            <line x1="394" y1="344" x2="410" y2="344"/>
+          </g>
+
+          <!-- Animated teal pulse on window (living room) -->
+          <rect x="248" y="222" width="115" height="80" rx="5" fill="#3ec6d8" opacity="0">
+            <animate attributeName="opacity" values="0;0.03;0" dur="4s" repeatCount="indefinite"/>
+          </rect>
+        </svg>
+      </div><!-- end house-svg-wrap -->
+    </div><!-- end house-scene -->
+  </div><!-- end hero-visual -->
 </section>
 
-<!-- SERVICIOS -->
+<!-- ═══════════════ SERVICES ═══════════════ -->
 <section class="services" id="servicios">
   <div class="services-header">
     <span class="section-tag reveal">Nuestros servicios</span>
@@ -467,87 +848,51 @@
     <p class="section-desc reveal">Soluciones personalizadas para que disfrutes una experiencia inteligente, segura y eficiente en tu hogar.</p>
   </div>
   <div class="services-grid">
-    <div class="service-card reveal reveal-delay-1">
-      <div class="service-icon">
-        <svg viewBox="0 0 24 24"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/><circle cx="12" cy="12" r="5"/></svg>
-      </div>
+    <div class="service-card reveal rd1">
+      <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/><circle cx="12" cy="12" r="5"/></svg></div>
       <h3>Iluminación Inteligente</h3>
       <p>Controla tus luces desde cualquier lugar, crea ambientes únicos y programa escenas automáticas según tu rutina.</p>
     </div>
-    <div class="service-card reveal reveal-delay-2">
-      <div class="service-icon">
-        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 110 20 10 10 0 010-20z"/><path d="M12 6v6l4 2"/></svg>
-      </div>
+    <div class="service-card reveal rd2">
+      <div class="service-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg></div>
       <h3>Automatización Total</h3>
       <p>Automatiza rutinas diarias y dispositivos para mayor comodidad, eficiencia y ahorro de energía en tu hogar.</p>
     </div>
-    <div class="service-card reveal reveal-delay-3">
-      <div class="service-icon">
-        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>
-      </div>
+    <div class="service-card reveal rd3">
+      <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg></div>
       <h3>Control por Voz</h3>
       <p>Maneja tu hogar con comandos de voz a través de asistentes inteligentes como Alexa, Google o Siri.</p>
     </div>
-    <div class="service-card reveal reveal-delay-1">
-      <div class="service-icon">
-        <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-      </div>
+    <div class="service-card reveal rd1">
+      <div class="service-icon"><svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
       <h3>Control desde tu Celular</h3>
       <p>Administra todos tus dispositivos desde una sola aplicación, estés donde estés, las 24 horas del día.</p>
     </div>
-    <div class="service-card reveal reveal-delay-2">
-      <div class="service-icon">
-        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      </div>
+    <div class="service-card reveal rd2">
+      <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
       <h3>Seguridad Inteligente</h3>
       <p>Monitorea y protege tu hogar con cámaras, sensores, alarmas y cerraduras inteligentes las 24/7.</p>
     </div>
-    <div class="service-card reveal reveal-delay-3">
-      <div class="service-icon">
-        <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-      </div>
+    <div class="service-card reveal rd3">
+      <div class="service-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
       <h3>Ahorro de Energía</h3>
       <p>Optimiza el consumo energético de tu hogar con sensores y automatizaciones que reducen costos fácilmente.</p>
     </div>
   </div>
 </section>
 
-<!-- CÓMO FUNCIONA -->
+<!-- ═══════════════ CÓMO FUNCIONA ═══════════════ -->
 <section class="how" id="como-funciona">
   <div class="how-inner">
     <div>
       <span class="section-tag reveal">Proceso simple</span>
       <h2 class="section-title reveal">¿Cómo funciona?</h2>
-      <p class="section-desc reveal" style="margin-bottom:44px;">En 4 sencillos pasos transformamos tu hogar en un espacio inteligente, seguro y eficiente.</p>
+      <p class="section-desc reveal" style="margin-bottom:36px">En 4 sencillos pasos transformamos tu hogar en un espacio inteligente, seguro y eficiente.</p>
       <div class="how-steps">
-        <div class="step reveal reveal-delay-1">
-          <div class="step-num">1</div>
-          <div class="step-content">
-            <h4>Evaluamos tu hogar</h4>
-            <p>Realizamos una visita para entender tus necesidades y objetivos de automatización.</p>
-          </div>
-        </div>
-        <div class="step reveal reveal-delay-2">
-          <div class="step-num">2</div>
-          <div class="step-content">
-            <h4>Diseñamos tu solución</h4>
-            <p>Creamos un proyecto personalizado con la mejor tecnología para ti y tu familia.</p>
-          </div>
-        </div>
-        <div class="step reveal reveal-delay-3">
-          <div class="step-num">3</div>
-          <div class="step-content">
-            <h4>Instalación profesional</h4>
-            <p>Instalamos y configuramos todos los dispositivos de forma segura y ordenada.</p>
-          </div>
-        </div>
-        <div class="step reveal reveal-delay-4">
-          <div class="step-num">4</div>
-          <div class="step-content">
-            <h4>Disfruta tu hogar inteligente</h4>
-            <p>Controla todo desde tu celular o con tu voz y vive la experiencia NexHome.</p>
-          </div>
-        </div>
+        <div class="step reveal rd1"><div class="step-num">1</div><div class="step-content"><h4>Evaluamos tu hogar</h4><p>Realizamos una visita para entender tus necesidades y objetivos de automatización.</p></div></div>
+        <div class="step reveal rd2"><div class="step-num">2</div><div class="step-content"><h4>Diseñamos tu solución</h4><p>Creamos un proyecto personalizado con la mejor tecnología para ti y tu familia.</p></div></div>
+        <div class="step reveal rd3"><div class="step-num">3</div><div class="step-content"><h4>Instalación profesional</h4><p>Instalamos y configuramos todos los dispositivos de forma segura y ordenada.</p></div></div>
+        <div class="step reveal rd4"><div class="step-num">4</div><div class="step-content"><h4>Disfruta tu hogar inteligente</h4><p>Controla todo desde tu celular o con tu voz y vive la experiencia NexHome.</p></div></div>
       </div>
     </div>
     <div class="how-visual reveal">
@@ -558,76 +903,37 @@
         <div class="phone-notch"></div>
         <div class="phone-header">Mi Hogar ✦</div>
         <div class="phone-grid">
-          <div class="phone-tile active">
-            <svg viewBox="0 0 24 24"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/><circle cx="12" cy="12" r="5"/></svg>
-            <span>Luces</span>
-          </div>
-          <div class="phone-tile">
-            <svg viewBox="0 0 24 24"><path d="M12 22a9 9 0 110-18 9 9 0 010 18z"/><path d="M12 8v4l3 3"/></svg>
-            <span>Clima</span>
-          </div>
-          <div class="phone-tile">
-            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span>Seguridad</span>
-          </div>
-          <div class="phone-tile active">
-            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-            <span>Cámaras</span>
-          </div>
-          <div class="phone-tile">
-            <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13M6 15H3a1 1 0 000 2h3a1 1 0 000-2zM21 13h-3a1 1 0 000 2h3a1 1 0 000-2z"/></svg>
-            <span>Música</span>
-          </div>
-          <div class="phone-tile">
-            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="3"/><rect x="2" y="10" width="20" height="3"/><path d="M2 17h20"/></svg>
-            <span>Persianas</span>
-          </div>
+          <div class="phone-tile active"><svg viewBox="0 0 24 24"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/><circle cx="12" cy="12" r="5"/></svg><span>Luces</span></div>
+          <div class="phone-tile"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg><span>Clima</span></div>
+          <div class="phone-tile"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Seguridad</span></div>
+          <div class="phone-tile active"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>Cámaras</span></div>
+          <div class="phone-tile"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span>Música</span></div>
+          <div class="phone-tile"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="3"/><rect x="2" y="10" width="20" height="3"/><path d="M2 17h20"/></svg><span>Persianas</span></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- QUÉ CONTROLAS -->
-<section class="control" id="controla">
+<!-- ═══════════════ CONTROL ═══════════════ -->
+<section class="control">
   <div class="control-header">
     <span class="section-tag reveal">Control total</span>
     <h2 class="section-title reveal">¿Qué puedes controlar?</h2>
     <p class="section-desc reveal">Todo tu hogar en una sola aplicación. Fácil, rápido y desde donde estés.</p>
   </div>
   <div class="control-items">
-    <div class="control-item reveal reveal-delay-1">
-      <svg viewBox="0 0 24 24"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/><circle cx="12" cy="12" r="5"/></svg>
-      <span>Iluminación</span>
-    </div>
-    <div class="control-item reveal reveal-delay-2">
-      <svg viewBox="0 0 24 24"><path d="M12 22a9 9 0 110-18 9 9 0 010 18z"/><path d="M12 8v4l3 3"/></svg>
-      <span>Clima & A/C</span>
-    </div>
-    <div class="control-item reveal reveal-delay-3">
-      <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="3"/><rect x="2" y="10" width="20" height="3"/><path d="M2 17h20"/></svg>
-      <span>Persianas & Cortinas</span>
-    </div>
-    <div class="control-item reveal reveal-delay-1">
-      <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-      <span>Entretenimiento</span>
-    </div>
-    <div class="control-item reveal reveal-delay-2">
-      <svg viewBox="0 0 24 24"><path d="M6 3h12M6 21h12M3 12h18M3 6l3-3 3 3 3-3 3 3 3-3M3 18l3 3 3-3 3 3 3-3 3 3"/></svg>
-      <span>Electrodomésticos</span>
-    </div>
-    <div class="control-item reveal reveal-delay-3">
-      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      <span>Seguridad</span>
-    </div>
-    <div class="control-item reveal reveal-delay-4">
-      <svg viewBox="0 0 24 24"><path d="M12 22s-8-4-8-10V5l8-3 8 3v7c0 6-8 10-8 10z"/><circle cx="12" cy="11" r="3"/></svg>
-      <span>Riego & Jardín</span>
-    </div>
+    <div class="control-item reveal rd1"><svg viewBox="0 0 24 24"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/><circle cx="12" cy="12" r="5"/></svg><span>Iluminación</span></div>
+    <div class="control-item reveal rd2"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg><span>Clima & A/C</span></div>
+    <div class="control-item reveal rd3"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="3"/><rect x="2" y="10" width="20" height="3"/><path d="M2 17h20"/></svg><span>Persianas</span></div>
+    <div class="control-item reveal rd1"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>Entretenimiento</span></div>
+    <div class="control-item reveal rd2"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8M12 3v4"/></svg><span>Electrodomésticos</span></div>
+    <div class="control-item reveal rd3"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>Seguridad</span></div>
+    <div class="control-item reveal rd4"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/><path d="M12 6v2M12 16v2M6 12h2M16 12h2"/></svg><span>Riego & Jardín</span></div>
   </div>
 </section>
 
-<!-- PLANES -->
+<!-- ═══════════════ PLANES ═══════════════ -->
 <section class="pricing" id="planes">
   <div class="pricing-header">
     <span class="section-tag reveal">Precios transparentes</span>
@@ -636,7 +942,7 @@
   <div class="pricing-card reveal">
     <div class="pricing-badge">Plan Personalizado</div>
     <div class="pricing-price"><small>$</small>1.990.000</div>
-    <p class="pricing-desc">Creamos el plan ideal para tu hogar y tu estilo de vida.<br>Incluye instalación profesional y garantía en todos los servicios.</p>
+    <p class="pricing-desc">Creamos el plan ideal para tu hogar y estilo de vida.<br>Incluye instalación profesional y garantía en todos los servicios.</p>
     <div class="pricing-features">
       <div class="pricing-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Instalación limpia y profesional</div>
       <div class="pricing-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Soluciones 100% personalizadas</div>
@@ -646,11 +952,11 @@
       <div class="pricing-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Garantía en todos nuestros servicios</div>
       <div class="pricing-feat"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>App móvil compatible con voz</div>
     </div>
-    <button class="btn-pricing" onclick="window.open('https://wa.me/573000000000?text=Hola! Me interesa cotizar un plan NexHome', '_blank')">Cotizar mi plan ahora →</button>
+    <button class="btn-pricing" onclick="window.open('https://wa.me/573000000000?text=Hola! Me interesa cotizar un plan NexHome','_blank')">Cotizar mi plan ahora →</button>
   </div>
 </section>
 
-<!-- POR QUÉ ELEGIRNOS -->
+<!-- ═══════════════ POR QUÉ ═══════════════ -->
 <section class="why" id="por-que">
   <div class="why-inner">
     <div>
@@ -659,54 +965,42 @@
       <p class="section-desc reveal">No solo instalamos tecnología, creamos experiencias que transforman tu forma de vivir.</p>
     </div>
     <div class="why-features">
-      <div class="why-feat reveal reveal-delay-1">
-        <div class="why-feat-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
-        <div><h4>Instalación profesional</h4><p>Nuestros técnicos certificados garantizan una instalación limpia y ordenada.</p></div>
-      </div>
-      <div class="why-feat reveal reveal-delay-2">
-        <div class="why-feat-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
-        <div><h4>Soporte especializado</h4><p>Equipo técnico disponible para ayudarte siempre que lo necesites.</p></div>
-      </div>
-      <div class="why-feat reveal reveal-delay-3">
-        <div class="why-feat-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-        <div><h4>Garantía total</h4><p>Todos nuestros servicios y equipos cuentan con garantía para tu tranquilidad.</p></div>
-      </div>
-      <div class="why-feat reveal reveal-delay-4">
-        <div class="why-feat-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-        <div><h4>Tecnología de vanguardia</h4><p>Soluciones escalables con los mejores dispositivos del mercado actual.</p></div>
-      </div>
+      <div class="why-feat reveal rd1"><div class="why-feat-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div><h4>Instalación profesional</h4><p>Nuestros técnicos certificados garantizan una instalación limpia y ordenada.</p></div></div>
+      <div class="why-feat reveal rd2"><div class="why-feat-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div><div><h4>Soporte especializado</h4><p>Equipo técnico disponible para ayudarte siempre que lo necesites.</p></div></div>
+      <div class="why-feat reveal rd3"><div class="why-feat-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><h4>Garantía total</h4><p>Todos nuestros servicios y equipos cuentan con garantía para tu tranquilidad.</p></div></div>
+      <div class="why-feat reveal rd4"><div class="why-feat-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><div><h4>Tecnología de vanguardia</h4><p>Soluciones escalables con los mejores dispositivos del mercado actual.</p></div></div>
     </div>
   </div>
 </section>
 
-<!-- CTA -->
+<!-- ═══════════════ CTA ═══════════════ -->
 <section class="cta-section" id="contacto">
   <span class="section-tag">¡Es hora!</span>
   <h2 class="section-title">Lleva tu hogar al<br>siguiente nivel</h2>
-  <p class="section-desc">Cotiza ahora sin compromiso. Nuestros expertos te diseñarán la solución perfecta para tu hogar y presupuesto.</p>
+  <p class="section-desc">Cotiza ahora sin compromiso. Nuestros expertos diseñarán la solución perfecta para tu hogar y presupuesto.</p>
   <div class="cta-actions">
     <a href="https://wa.me/573000000000?text=Hola! Me interesa cotizar un plan NexHome Smart Living" target="_blank" class="btn-whatsapp">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       Cotizar por WhatsApp
     </a>
     <a href="mailto:info@nexhome.co" class="btn-outline">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
       Enviar email
     </a>
   </div>
 </section>
 
-<!-- FOOTER -->
+<!-- ═══════════════ FOOTER ═══════════════ -->
 <footer>
-  <div class="footer-logo">
-    <div class="logo-icon" style="width:36px;height:36px;">
-      <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:none;stroke:white;stroke-width:2;"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1z"/><circle cx="12" cy="13" r="2.5"/></svg>
+  <a class="logo-area" href="#" style="text-decoration:none">
+    <div class="logo-icon" style="width:36px;height:36px">
+      <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:none;stroke:white;stroke-width:2"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1z"/><path d="M9.5 21V13h5v8"/></svg>
     </div>
     <div>
-      <div class="logo-text" style="font-size:1rem;"><span>NEX</span>HOME</div>
+      <div class="logo-text" style="font-size:0.95rem"><span>NEX</span>HOME</div>
       <span class="logo-sub">Smart Living</span>
     </div>
-  </div>
+  </a>
   <div class="footer-info">
     Hacemos tu vida más fácil, segura y conectada.<br>
     © 2026 NexHome Smart Living. Todos los derechos reservados.
@@ -720,28 +1014,35 @@
 </footer>
 
 <script>
-  // Custom cursor
-  const cursor = document.getElementById('cursor');
-  const cursorRing = document.getElementById('cursorRing');
-  let mx = 0, my = 0, rx = 0, ry = 0;
-  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx+'px'; cursor.style.top = my+'px'; });
-  function animRing() { rx += (mx - rx) * 0.15; ry += (my - ry) * 0.15; cursorRing.style.left = rx+'px'; cursorRing.style.top = ry+'px'; requestAnimationFrame(animRing); }
-  animRing();
-  document.querySelectorAll('a,button,.service-card,.control-item,.why-feat').forEach(el => {
-    el.addEventListener('mouseenter', () => { cursor.style.width='14px'; cursor.style.height='14px'; cursorRing.style.width='50px'; cursorRing.style.height='50px'; cursorRing.style.borderColor='var(--teal-light)'; });
-    el.addEventListener('mouseleave', () => { cursor.style.width='10px'; cursor.style.height='10px'; cursorRing.style.width='36px'; cursorRing.style.height='36px'; cursorRing.style.borderColor='var(--teal)'; });
-  });
+  // ── Custom cursor (desktop only) ──
+  if(window.matchMedia('(pointer: fine)').matches) {
+    const cur = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+    (function animR(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animR);})();
+    document.querySelectorAll('a,button,.service-card,.control-item,.why-feat').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{cur.style.width='14px';cur.style.height='14px';ring.style.width='50px';ring.style.height='50px';ring.style.borderColor='var(--teal-light)';});
+      el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';ring.style.width='36px';ring.style.height='36px';ring.style.borderColor='var(--teal)';});
+    });
+  }
 
-  // Navbar scroll
-  const navbar = document.getElementById('navbar');
-  window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 50); });
+  // ── Navbar scroll ──
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>50));
 
-  // Scroll reveal
+  // ── Mobile hamburger ──
+  const drawer = document.getElementById('navDrawer');
+  document.getElementById('hamburger').addEventListener('click',()=>drawer.classList.add('open'));
+  document.getElementById('drawerClose').addEventListener('click',()=>drawer.classList.remove('open'));
+  function closeDrawer(){drawer.classList.remove('open');}
+
+  // ── Scroll reveal ──
   const reveals = document.querySelectorAll('.reveal');
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
-  }, { threshold: 0.15 });
-  reveals.forEach(r => obs.observe(r));
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
+  },{threshold:0.12});
+  reveals.forEach(r=>obs.observe(r));
 </script>
 </body>
 </html>
